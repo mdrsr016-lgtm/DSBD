@@ -2,6 +2,8 @@
 
 A web-first financial app built with **React + Vite + TypeScript + Firebase**, designed to convert to Android via **Capacitor**.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/DSBD)
+
 ---
 
 ## 🚀 Getting Started
@@ -45,6 +47,39 @@ src/
 └── utils/
     └── index.ts       # Currency, date, calculation helpers
 ```
+
+---
+
+## 🚀 Deploy to Vercel
+
+### Option A — Vercel CLI
+```bash
+npm install -g vercel
+vercel
+```
+
+### Option B — Vercel Dashboard
+1. Push your code to GitHub
+2. Go to [vercel.com/new](https://vercel.com/new) and import the repo
+3. Vercel auto-detects Vite — no build settings needed
+4. Add your Firebase environment variables:
+
+| Variable | Where to find it |
+|---|---|
+| `VITE_FIREBASE_API_KEY` | Firebase Console → Project Settings → Web App |
+| `VITE_FIREBASE_AUTH_DOMAIN` | Same |
+| `VITE_FIREBASE_PROJECT_ID` | Same |
+| `VITE_FIREBASE_STORAGE_BUCKET` | Same |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Same |
+| `VITE_FIREBASE_APP_ID` | Same |
+
+> **Important**: In Vercel dashboard → Settings → Environment Variables,
+> add all 6 `VITE_` variables. They must start with `VITE_` to be exposed to the client.
+
+5. Click **Deploy** — done!
+
+> The `vercel.json` in this repo handles SPA routing automatically.
+> All routes (e.g. `/dashboard`, `/loans`) correctly serve `index.html`.
 
 ---
 

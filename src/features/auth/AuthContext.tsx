@@ -1,5 +1,5 @@
 // ============================================================
-// Auth Context — Firebase Authentication
+// Auth Context — Firebase or Mock Authentication
 // ============================================================
 
 import {
@@ -16,7 +16,7 @@ import {
   signOut as firebaseSignOut,
   updateProfile,
 } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { auth, isFirebaseConfigured } from '@/lib/firebase'
 import type { AuthContextType, User } from '@/types'
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -26,6 +26,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!isFirebaseConfigured) {
+      // Mock Auth initialization
+      const storedMockUser = localStorage.getItem('dsbd-mock-user')
+      if (storedMockUser) {
+        try {
+          setUser(JSON.parse(storedMockUser))
+        } catch {
+          // ignore
+        }
+      }
+      setLoading(false)
+      return
+    }
+
+    // Real Firebase Auth
     const unsubscribe = onAuthStateChanged(auth, firebaseUser => {
       setUser(firebaseUser)
       setLoading(false)
@@ -34,15 +49,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
+    if (!isFirebaseConfigured) {
+      // Mock sign in
+      const mockUser = {
+        uid: 'mock-user-id',
+        email,
+        displayName: email.split('@')[0],
+      } as any
+      setUser(mockUser)
+      localStorage.setItem('dsbd-mock-user', JSON.stringify(mockUser))
+      return
+    }
+
     await signInWithEmailAndPassword(auth, email, password)
   }
 
   const signUp = async (email: string, password: string, displayName: string) => {
+    if (!isFirebaseConfigured) {
+      // Mock sign up
+      const mockUser = {
+        uid: 'mock-user-id',
+        email,
+        displayName,
+      } as any
+      setUser(mockUser)
+      localStorage.setItem('dsbd-mock-user', JSON.stringify(mockUser))
+      return
+    }
+
     const { user } = await createUserWithEmailAndPassword(auth, email, password)
     await updateProfile(user, { displayName })
   }
 
   const signOut = async () => {
+    if (!isFirebaseConfigured) {
+      // Mock sign out
+      setUser(null)
+      localStorage.removeItem('dsbd-mock-user')
+      return
+    }
+
     await firebaseSignOut(auth)
   }
 
@@ -58,3 +104,4 @@ export function useAuth(): AuthContextType {
   if (!ctx) throw new Error('useAuth must be used within <AuthProvider>')
   return ctx
 }
+

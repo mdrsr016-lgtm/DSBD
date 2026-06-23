@@ -1,0 +1,9 @@
+# Don't deploy Android project files to Vercel
+android/
+ios/
+.capacitor/
+
+# Local env files (use Vercel dashboard for env vars)
+.env
+.env.local
+.env.*.local

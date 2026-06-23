@@ -29,12 +29,12 @@ export default function App() {
       <AuthProvider>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            {/* Public routes */}
-            <Route path="/login" element={<LoginPage />} />
+            {/* Landing / public routes */}
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/login" element={<Navigate to="/" replace />} />
 
             {/* Protected routes */}
             <Route element={<AuthGuard />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/budget"    element={<BudgetPage />} />
               <Route path="/loans"     element={<LoansPage />} />
