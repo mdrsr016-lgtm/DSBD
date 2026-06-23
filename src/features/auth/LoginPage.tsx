@@ -144,6 +144,10 @@ export default function LoginPage() {
   // Language selection modal
   const [showLangModal, setShowLangModal] = useState(false)
 
+  // Legal modals
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+
   // Chatbot modal and conversation log
   const [showChatbotModal, setShowChatbotModal] = useState(false)
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string }>>([])
@@ -495,12 +499,12 @@ export default function LoginPage() {
         <p className="login-legal">
           {isBengali ? (
             <>
-              চালিয়ে যাওয়ার মাধ্যমে, আপনি আমাদের <a href="#">পরিষেবার শর্তাবলী</a> এবং <a href="#">গোপনীয়তা নীতিতে</a> সম্মত হচ্ছেন।
+              চালিয়ে যাওয়ার মাধ্যমে, আপনি আমাদের <a href="#" onClick={(e) => { e.preventDefault(); setShowTermsModal(true); }}>পরিষেবার শর্তাবলী</a> এবং <a href="#" onClick={(e) => { e.preventDefault(); setShowPrivacyModal(true); }}>গোপনীয়তা নীতিতে</a> সম্মত হচ্ছেন।
             </>
           ) : (
             <>
               By continuing, you agree to our{' '}
-              <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+              <a href="#" onClick={(e) => { e.preventDefault(); setShowTermsModal(true); }}>Terms of Service</a> and <a href="#" onClick={(e) => { e.preventDefault(); setShowPrivacyModal(true); }}>Privacy Policy</a>.
             </>
           )}
         </p>
@@ -1022,6 +1026,123 @@ export default function LoginPage() {
           </div>
         </div>
       )}
+
+      {/* ══════════════════════════════════════════════════════
+          Terms of Service Modal
+      ══════════════════════════════════════════════════════ */}
+      {showTermsModal && (
+        <div
+          className="fp-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="terms-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowTermsModal(false) }}
+        >
+          <div className="fp-modal policy-modal">
+            <button type="button" className="fp-close" onClick={() => setShowTermsModal(false)} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+            
+            {/* Icon */}
+            <div className="fp-icon-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="3" width="14" height="18" rx="2" stroke="url(#termGrad)" strokeWidth="1.6" />
+                <line x1="9" y1="8" x2="15" y2="8" stroke="url(#termGrad)" strokeWidth="1.6" strokeLinecap="round" />
+                <line x1="9" y1="12" x2="15" y2="12" stroke="url(#termGrad)" strokeWidth="1.6" strokeLinecap="round" />
+                <line x1="9" y1="16" x2="13" y2="16" stroke="url(#termGrad)" strokeWidth="1.6" strokeLinecap="round" />
+                <defs>
+                  <linearGradient id="termGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#7c3aed" />
+                    <stop offset="1" stopColor="#818cf8" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <h2 id="terms-title" className="fp-title">{isBengali ? 'পরিষেবার শর্তাবলী' : 'Terms of Service'}</h2>
+            <div className="policy-content">
+              {isBengali ? (
+                <>
+                  <p><strong>১. ভূমিকা</strong><br/>DSBD প্ল্যাটফর্মে স্বাগতম। এই শর্তাবলী আপনার আমাদের পরিষেবা ব্যবহারের নিয়মাবলী নির্ধারণ করে।</p>
+                  <p><strong>২. অ্যাকাউন্টের দায়িত্ব</strong><br/>আপনার অ্যাকাউন্টের নিরাপত্তা এবং তথ্যের গোপনীয়তা বজায় রাখার দায়িত্ব আপনার।</p>
+                  <p><strong>৩. লেনদেন এবং ফি</strong><br/>সকল লেনদেন এবং ফি DSBD-এর নির্ধারিত নীতি অনুযায়ী পরিচালিত হবে।</p>
+                  <p><strong>৪. পরিবর্তন</strong><br/>আমরা যেকোনো সময় এই শর্তাবলী আপডেট করার অধিকার রাখি।</p>
+                </>
+              ) : (
+                <>
+                  <p><strong>1. Introduction</strong><br/>Welcome to the DSBD platform. These terms govern your use of our services.</p>
+                  <p><strong>2. Account Responsibilities</strong><br/>You are responsible for maintaining the security of your account and the confidentiality of your information.</p>
+                  <p><strong>3. Transactions and Fees</strong><br/>All transactions and applicable fees will be managed according to DSBD's established policies.</p>
+                  <p><strong>4. Modifications</strong><br/>We reserve the right to update these terms at any time.</p>
+                </>
+              )}
+            </div>
+            <button className="fp-dismiss" onClick={() => setShowTermsModal(false)}>
+              {isBengali ? 'বুঝেছি' : 'Understood'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════
+          Privacy Policy Modal
+      ══════════════════════════════════════════════════════ */}
+      {showPrivacyModal && (
+        <div
+          className="fp-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="privacy-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowPrivacyModal(false) }}
+        >
+          <div className="fp-modal policy-modal">
+            <button type="button" className="fp-close" onClick={() => setShowPrivacyModal(false)} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+            
+            {/* Icon */}
+            <div className="fp-icon-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="url(#privGrad)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M9 12l2 2 4-4" stroke="url(#privGrad)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <defs>
+                  <linearGradient id="privGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#7c3aed" />
+                    <stop offset="1" stopColor="#818cf8" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <h2 id="privacy-title" className="fp-title">{isBengali ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</h2>
+            <div className="policy-content">
+              {isBengali ? (
+                <>
+                  <p><strong>১. তথ্য সংগ্রহ</strong><br/>আমরা আপনার অ্যাকাউন্ট তৈরি এবং পরিষেবা প্রদানের জন্য প্রয়োজনীয় তথ্য সংগ্রহ করি।</p>
+                  <p><strong>২. তথ্যের ব্যবহার</strong><br/>আপনার তথ্য শুধুমাত্র আমাদের পরিষেবা উন্নত করতে এবং লেনদেন পরিচালনা করতে ব্যবহৃত হয়।</p>
+                  <p><strong>৩. ডেটা নিরাপত্তা</strong><br/>আমরা আপনার তথ্য সুরক্ষিত রাখতে উন্নত নিরাপত্তা ব্যবস্থা প্রয়োগ করি।</p>
+                  <p><strong>৪. তৃতীয় পক্ষ</strong><br/>আমরা আপনার অনুমতি ছাড়া তৃতীয় পক্ষের কাছে আপনার ব্যক্তিগত তথ্য বিক্রি করি না।</p>
+                </>
+              ) : (
+                <>
+                  <p><strong>1. Data Collection</strong><br/>We collect information necessary to create your account and provide our services.</p>
+                  <p><strong>2. Use of Information</strong><br/>Your data is used solely to improve our services and manage your transactions.</p>
+                  <p><strong>3. Data Security</strong><br/>We employ advanced security measures to keep your information safe.</p>
+                  <p><strong>4. Third Parties</strong><br/>We do not sell your personal information to third parties without your explicit consent.</p>
+                </>
+              )}
+            </div>
+            <button className="fp-dismiss" onClick={() => setShowPrivacyModal(false)}>
+              {isBengali ? 'বুঝেছি' : 'Understood'}
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

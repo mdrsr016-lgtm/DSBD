@@ -140,8 +140,8 @@
   position: relative;
   width: 100%;
   background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: clamp(16px, 4vw, 24px);
   /* fluid padding so card breathes on desktop but tight on mobile */
@@ -594,8 +594,8 @@
   justify-content: center;
   padding: 16px;
   background: rgba(3, 0, 30, 0.72);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   animation: fpOverlayIn 0.22s ease both;
 }
 
@@ -610,8 +610,8 @@
   width: 100%;
   max-width: 380px;
   background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 20px;
   padding: 36px 28px 28px;
@@ -797,8 +797,8 @@
   justify-content: center;
   padding: 16px;
   background: rgba(3, 0, 30, 0.78);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   animation: fpOverlayIn 0.22s ease both;
 }
 
@@ -810,8 +810,8 @@
   max-height: 88vh;
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 22px;
   padding: 28px 24px 24px;
@@ -1221,8 +1221,8 @@
   height: 44px;
   border-radius: 50%;
   background: rgba(15, 12, 42, 0.55);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
@@ -1297,8 +1297,8 @@
   height: 44px;
   border-radius: 50%;
   background: rgba(15, 12, 42, 0.55);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
@@ -1452,8 +1452,8 @@
   width: 360px;
   max-width: calc(100vw - 40px);
   background: rgba(14, 11, 38, 0.92);
-  backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid rgba(167, 139, 250, 0.2);
   border-radius: 24px;
   display: flex;
@@ -1678,4 +1678,49 @@
 .chatbot-send-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Policy Modals (Terms & Privacy)
+═══════════════════════════════════════════════════════ */
+
+.policy-modal {
+  max-width: 480px; /* Slightly wider for reading text */
+  padding-bottom: 24px;
+}
+
+.policy-content {
+  margin-top: 16px;
+  margin-bottom: 24px;
+  max-height: 40vh; /* Keeps the modal from getting too tall */
+  overflow-y: auto;
+  padding-right: 12px;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167, 139, 250, 0.3) transparent;
+}
+
+.policy-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.policy-content::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.3);
+  border-radius: 99px;
+}
+
+.policy-content p {
+  margin: 0 0 16px 0;
+}
+
+.policy-content strong {
+  color: rgba(255, 255, 255, 0.95);
+  font-family: 'Space Grotesk', sans-serif;
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
 }
