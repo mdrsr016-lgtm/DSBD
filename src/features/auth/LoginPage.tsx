@@ -98,12 +98,12 @@ export default function LoginPage() {
           {/* Heading */}
           <div className="login-header">
             <h1 className="login-title">
-              {mode === 'signin' ? 'Welcome back' : 'Get started'}
+              {mode === 'signin' ? 'Secure Account Sign In' : 'Create Your Account'}
             </h1>
             <p className="login-subtitle">
               {mode === 'signin'
-                ? 'Sign in to your DSBD account'
-                : 'Create your free account today'}
+                ? 'Enter your credentials to access your financial dashboard'
+                : 'Set up your personal ledger to manage budgets and track loans'}
             </p>
           </div>
 
