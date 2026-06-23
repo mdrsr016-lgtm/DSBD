@@ -2,16 +2,28 @@
    LoginPage — Premium Auth Card
    ============================================================ */
 
-/* ── Background ──────────────────────────────────────────── */
 .login-bg {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f0c29 0%, #1a1042 40%, #302b63 70%, #24243e 100%);
+  background: linear-gradient(-45deg, #020b08, #033527, #051e18, #011c13, #020907);
+  background-size: 400% 400%;
+  animation: gradientShift 18s ease-in-out infinite;
   position: relative;
   overflow: hidden;
   padding: 24px 16px;
+}
+
+/* Static crisp dot-grid overlay that does not move with the shifting gradient */
+.login-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ── Animated gradient orbs ──────────────────────────────── */
@@ -21,12 +33,13 @@
   filter: blur(80px);
   animation: orbFloat 8s ease-in-out infinite;
   pointer-events: none;
+  z-index: 1;
 }
 
 .login-orb--1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, transparent 70%);
   top: -120px;
   left: -100px;
   animation-delay: 0s;
@@ -35,7 +48,7 @@
 .login-orb--2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.12) 0%, transparent 70%);
   bottom: -80px;
   right: -80px;
   animation-delay: -3s;
@@ -44,7 +57,7 @@
 .login-orb--3 {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
   top: 50%;
   left: 55%;
   animation-delay: -5s;
@@ -56,10 +69,16 @@
   66%       { transform: translateY(15px) scale(0.97); }
 }
 
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* ── Wrapper ─────────────────────────────────────────────── */
 .login-wrapper {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -93,11 +112,12 @@
 }
 
 .login-brand__name {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-family: 'Caviler', sans-serif;
+  font-size: 2.1rem;
+  font-weight: normal;
   color: #ffffff;
   letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 /* ── Card ────────────────────────────────────────────────── */
@@ -159,10 +179,10 @@
   left: 4px;
   width: calc(50% - 4px);
   height: calc(100% - 8px);
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #10b981, #059669);
   border-radius: 9px;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .login-tab-indicator--right {
@@ -238,12 +258,12 @@
 
 .login-forgot {
   font-size: 0.8rem;
-  color: rgba(99, 102, 241, 0.9);
+  color: rgba(16, 185, 129, 0.9);
   transition: color 0.15s ease;
 }
 
 .login-forgot:hover {
-  color: #a5b4fc;
+  color: #6ee7b7;
 }
 
 /* ── Input wrap ──────────────────────────────────────────── */
@@ -264,7 +284,7 @@
 }
 
 .login-input-wrap:focus-within .login-input-icon {
-  color: rgba(99, 102, 241, 0.9);
+  color: rgba(16, 185, 129, 0.9);
 }
 
 .login-input {
@@ -288,9 +308,9 @@
 }
 
 .login-input:focus {
-  border-color: rgba(99, 102, 241, 0.7);
+  border-color: rgba(16, 185, 129, 0.7);
   background: rgba(255, 255, 255, 0.09);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 }
 
 .login-input--password {
@@ -345,7 +365,7 @@
   justify-content: center;
   gap: 8px;
   padding: 13px 24px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 600;
@@ -358,7 +378,7 @@
     transform 0.15s ease,
     box-shadow 0.15s ease,
     opacity 0.15s ease;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
   position: relative;
   overflow: hidden;
 }
@@ -373,12 +393,12 @@
 
 .login-submit:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
 }
 
 .login-submit:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .login-submit:disabled {
@@ -409,7 +429,7 @@
 }
 
 .login-switch__btn {
-  color: #a5b4fc;
+  color: #6ee7b7;
   font-weight: 500;
   background: none;
   border: none;
@@ -421,7 +441,7 @@
 }
 
 .login-switch__btn:hover {
-  color: #c7d2fe;
+  color: #a7f3d0;
   text-decoration: underline;
 }
 
@@ -434,11 +454,11 @@
 }
 
 .login-legal a {
-  color: rgba(165, 180, 252, 0.7);
+  color: rgba(110, 231, 183, 0.7);
   text-decoration: none;
 }
 
 .login-legal a:hover {
-  color: rgba(165, 180, 252, 1);
+  color: rgba(110, 231, 183, 1);
   text-decoration: underline;
 }
