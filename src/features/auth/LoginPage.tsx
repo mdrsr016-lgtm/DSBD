@@ -5,9 +5,31 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/AuthContext'
+import { getChatbotReply, getChatbotWelcome } from '@/features/auth/chatbotEngine'
 import './LoginPage.css'
 
 type Mode = 'signin' | 'signup'
+
+interface DemoLogin {
+  id: string
+  label: string
+  labelBn: string
+  user: string
+  password: string
+}
+
+const DEMO_LOGINS: DemoLogin[] = [
+  { id: 'founder', label: 'Founder', labelBn: 'প্রতিষ্ঠাতা', user: 'founder.dsbd.com', password: 'founder' },
+  { id: 'user', label: 'User', labelBn: 'ব্যবহারকারী', user: 'user123.dabd.com', password: 'user123' },
+  { id: 'agent', label: 'Agent', labelBn: 'এজেন্ট', user: 'agent123.dsbd.com', password: 'agent123' },
+  { id: 'manager', label: 'Manager', labelBn: 'ম্যানেজার', user: 'manager123.dabd.com', password: 'manager123' },
+]
+
+function demoUserToEmail(user: string): string {
+  if (user.includes('@')) return user
+  const dot = user.indexOf('.')
+  return dot === -1 ? user : `${user.slice(0, dot)}@${user.slice(dot + 1)}`
+}
 
 // ── Agent data keyed by area ─────────────────────────────────
 interface Agent {
@@ -143,6 +165,7 @@ export default function LoginPage() {
 
   // Language selection modal
   const [showLangModal, setShowLangModal] = useState(false)
+  const [showInfoModal, setShowInfoModal] = useState(false)
 
   // Legal modals
   const [showTermsModal, setShowTermsModal] = useState(false)
@@ -150,7 +173,7 @@ export default function LoginPage() {
 
   // Chatbot modal and conversation log
   const [showChatbotModal, setShowChatbotModal] = useState(false)
-  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string }>>([])
+  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string; options?: string[] }>>([])
   const [chatInput, setChatInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
 
@@ -174,14 +197,8 @@ export default function LoginPage() {
   // ── Initialize Chatbot Messages on open ──────────────────────
   useEffect(() => {
     if (showChatbotModal) {
-      setChatMessages([
-        {
-          sender: 'bot',
-          text: isBengali
-            ? 'হ্যালো! আমি আপনার ডিএসবিডি এআই সহকারী। আপনার দৈনিক বাজেট, সক্রিয় ঋণ, বা অ্যাকাউন্ট কীভাবে তৈরি করবেন সে সম্পর্কে জিজ্ঞাসা করুন।'
-            : 'Hello! I am your DSBD AI Assistant. Ask me anything about your daily budgets, active loans, or how to register an account.'
-        }
-      ])
+      const welcome = getChatbotWelcome(isBengali)
+      setChatMessages([{ sender: 'bot', text: welcome.text, options: welcome.options }])
       setIsTyping(false)
       setChatInput('')
     }
@@ -259,41 +276,36 @@ export default function LoginPage() {
     }
   }
 
-  // ── Chatbot send handler ─────────────────────────────────────
-  const handleChatSend = () => {
-    const text = chatInput.trim()
-    if (!text) return
-    const userMsg = { sender: 'user' as const, text }
-    setChatMessages(prev => [...prev, userMsg])
-    setChatInput('')
+  // ── Chatbot send handlers ────────────────────────────────────
+  const deliverBotReply = (userText: string) => {
     setIsTyping(true)
     setTimeout(() => {
-      const q = text.toLowerCase()
-      let reply = isBengali
-        ? 'আমি দুঃখিত, আমি সেটি বুঝতে পারিনি। অনুগ্রহ করে বাজেট, ঋণ বা নিবন্ধন সম্পর্কে জিজ্ঞাসা করুন।'
-        : "I'm not sure about that. Try asking about budgets, loans, or account registration."
-      if (q.includes('budget') || q.includes('বাজেট')) {
-        reply = isBengali
-          ? 'আপনার বাজেট ট্র্যাক করতে ড্যাশবোর্ডে লগইন করুন এবং "বাজেট" বিভাগে যান।'
-          : 'To track your budget, log in and navigate to the Budget section in your dashboard.'
-      } else if (q.includes('loan') || q.includes('ঋণ')) {
-        reply = isBengali
-          ? 'আপনার সক্রিয় ঋণ দেখতে ড্যাশবোর্ডের "ঋণ" বিভাগে যান।'
-          : 'To manage your loans, go to the Loans section after signing in.'
-      } else if (q.includes('register') || q.includes('sign up') || q.includes('নিবন্ধন')) {
-        reply = isBengali
-          ? 'নিবন্ধন করতে আপনার এলাকা এজেন্টের সাথে যোগাযোগ করুন।'
-          : 'To register, please contact your Area Agent — they will create your account.'
-      } else if (q.includes('password') || q.includes('পাসওয়ার্ড')) {
-        reply = isBengali
-          ? 'পাসওয়ার্ড রিসেট করতে আপনার এলাকা এজেন্টের সাথে যোগাযোগ করুন।'
-          : 'To reset your password, contact your Area Agent for a secure identity verification.'
-      } else if (q.includes('hello') || q.includes('hi') || q.includes('হ্যালো') || q.includes('হাই')) {
-        reply = isBengali ? 'হ্যালো! আপনাকে কীভাবে সাহায্য করতে পারি?' : 'Hello! How can I help you today?'
-      }
+      const reply = getChatbotReply(userText, isBengali)
       setIsTyping(false)
-      setChatMessages(prev => [...prev, { sender: 'bot', text: reply }])
-    }, 1200)
+      setChatMessages(prev => [...prev, { sender: 'bot', text: reply.text, options: reply.options }])
+    }, 700)
+  }
+
+  const sendChat = (text: string) => {
+    if (!text.trim() || isTyping) return
+    setChatMessages(prev => [...prev, { sender: 'user', text }])
+    deliverBotReply(text)
+  }
+
+  const handleChatSend = () => {
+    const text = chatInput.trim()
+    if (!text || isTyping) return
+    setChatMessages(prev => [...prev, { sender: 'user', text }])
+    setChatInput('')
+    deliverBotReply(text)
+  }
+
+  const fillDemoLogin = (demo: DemoLogin) => {
+    setEmail(demoUserToEmail(demo.user))
+    setPassword(demo.password)
+    setError(null)
+    setMode('signin')
+    setShowInfoModal(false)
   }
 
   // ============================================================
@@ -544,31 +556,122 @@ export default function LoginPage() {
           </>
         )}
 
-        {/* Toggle Settings Gear */}
-        <button
-          type="button"
-          className={`login-settings-btn ${settingsExpanded ? 'login-settings-btn--active' : ''}`}
-          onClick={() => setSettingsExpanded(!settingsExpanded)}
-          aria-label="Toggle Settings Menu"
-        >
-          {/* Wrapper span carries the spin — completely isolated from button transforms */}
-          <span className="settings-gear">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        <div className="login-settings-stack">
+          {/* Information */}
+          <button
+            type="button"
+            className="login-dock-btn login-info-btn"
+            onClick={() => { setShowInfoModal(true); setSettingsExpanded(false) }}
+            aria-label={isBengali ? 'তথ্য' : 'Information'}
+            title={isBengali ? 'তথ্য' : 'Information'}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
-          </span>
-        </button>
+          </button>
+
+          {/* Toggle Settings Gear */}
+          <button
+            type="button"
+            className={`login-settings-btn ${settingsExpanded ? 'login-settings-btn--active' : ''}`}
+            onClick={() => setSettingsExpanded(!settingsExpanded)}
+            aria-label="Toggle Settings Menu"
+          >
+            {/* Wrapper span carries the spin — completely isolated from button transforms */}
+            <span className="settings-gear">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </span>
+          </button>
+        </div>
       </div>
+
+      {/* ══════════════════════════════════════════════════════
+          Information Modal
+      ══════════════════════════════════════════════════════ */}
+      {showInfoModal && (
+        <div
+          className="fp-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="info-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowInfoModal(false) }}
+        >
+          <div className="fp-modal">
+            <button type="button" className="fp-close" onClick={() => setShowInfoModal(false)} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            <div className="fp-icon-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="url(#infoGrad)" strokeWidth="1.6" />
+                <line x1="12" y1="16" x2="12" y2="12" stroke="url(#infoGrad)" strokeWidth="1.8" strokeLinecap="round" />
+                <line x1="12" y1="8" x2="12.01" y2="8" stroke="url(#infoGrad)" strokeWidth="2.2" strokeLinecap="round" />
+                <defs>
+                  <linearGradient id="infoGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#7c3aed" />
+                    <stop offset="1" stopColor="#818cf8" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <h2 id="info-title" className="fp-title">{isBengali ? 'তথ্য' : 'Information'}</h2>
+
+            <p className="fp-message">
+              {isBengali
+                ? 'দ্রুত লগইনের জন্য নিচের যেকোনো অ্যাকাউন্টে ক্লিক করুন। ইমেইল ও পাসওয়ার্ড স্বয়ংক্রিয়ভাবে পূরণ হবে।'
+                : 'Click any account below to auto-fill the login form.'}
+            </p>
+
+            <div className="fp-demo-list">
+              {DEMO_LOGINS.map((demo, index) => (
+                <button
+                  key={demo.id}
+                  type="button"
+                  className="fp-demo-card"
+                  onClick={() => fillDemoLogin(demo)}
+                >
+                  <span className="fp-demo-card__index">{index + 1}</span>
+                  <span className="fp-demo-card__body">
+                    <span className="fp-demo-card__role">{isBengali ? demo.labelBn : demo.label}</span>
+                    <span className="fp-demo-card__row">
+                      <span className="fp-demo-card__key">{isBengali ? 'ব্যবহারকারী' : 'User'}</span>
+                      <span className="fp-demo-card__val">{demo.user}</span>
+                    </span>
+                    <span className="fp-demo-card__row">
+                      <span className="fp-demo-card__key">{isBengali ? 'পাসওয়ার্ড' : 'Password'}</span>
+                      <span className="fp-demo-card__val">{demo.password}</span>
+                    </span>
+                  </span>
+                  <svg className="fp-demo-card__arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              ))}
+            </div>
+
+            <button type="button" className="fp-dismiss" onClick={() => setShowInfoModal(false)}>
+              {isBengali ? 'ঠিক আছে' : 'Okay'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ══════════════════════════════════════════════════════
           Language Selection Modal
@@ -678,7 +781,18 @@ export default function LoginPage() {
                       </svg>
                     </span>
                   )}
-                  <span className="chatbot-bubble-text">{msg.text}</span>
+                  <div className="chatbot-bubble-content" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <span className="chatbot-bubble-text">{msg.text}</span>
+                    {msg.options && msg.options.length > 0 && (
+                      <div className="chatbot-options">
+                        {msg.options.map((opt, idx) => (
+                          <button key={idx} type="button" className="chatbot-option-btn" onClick={() => sendChat(opt)}>
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
               {isTyping && (
