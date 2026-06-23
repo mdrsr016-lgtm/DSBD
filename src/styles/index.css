@@ -144,7 +144,8 @@
 }
 
 html {
-  font-size: 16px;
+  /* Fluid base: 14px on 320px wide screens → 16px on 640px+ */
+  font-size: clamp(14px, 2.5vw, 16px);
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
 }

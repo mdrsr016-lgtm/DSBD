@@ -1,9 +1,12 @@
 /* ============================================================
-   LoginPage — Premium Auth Card
+   LoginPage — Premium Auth Card  |  Fully Responsive
+   Breakpoints: 360 · 480 · 640 · 768+
    ============================================================ */
 
+/* ── Background ──────────────────────────────────────────── */
 .login-bg {
   min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport for mobile browsers */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,10 +15,11 @@
   animation: gradientShift 18s ease-in-out infinite;
   position: relative;
   overflow: hidden;
-  padding: 24px 16px;
+  /* fluid vertical padding so card never touches top/bottom edges */
+  padding: clamp(16px, 5vh, 48px) clamp(12px, 4vw, 24px);
 }
 
-/* Static crisp dot-grid overlay that does not move with the shifting gradient */
+/* Static crisp dot-grid overlay */
 .login-bg::before {
   content: '';
   position: absolute;
@@ -37,8 +41,8 @@
 }
 
 .login-orb--1 {
-  width: 500px;
-  height: 500px;
+  width: clamp(220px, 40vw, 500px);
+  height: clamp(220px, 40vw, 500px);
   background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, transparent 70%);
   top: -120px;
   left: -100px;
@@ -46,8 +50,8 @@
 }
 
 .login-orb--2 {
-  width: 400px;
-  height: 400px;
+  width: clamp(180px, 32vw, 400px);
+  height: clamp(180px, 32vw, 400px);
   background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
   bottom: -80px;
   right: -80px;
@@ -55,8 +59,8 @@
 }
 
 .login-orb--3 {
-  width: 300px;
-  height: 300px;
+  width: clamp(140px, 25vw, 300px);
+  height: clamp(140px, 25vw, 300px);
   background: radial-gradient(circle, rgba(167, 139, 250, 0.07) 0%, transparent 70%);
   top: 50%;
   left: 55%;
@@ -82,9 +86,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: clamp(16px, 3vh, 24px);
   width: 100%;
-  max-width: 440px;
+  /* fluid max-width: fills small screens, caps at 440px on large */
+  max-width: min(440px, 100%);
   animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -105,17 +110,25 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 24px;
+  margin-bottom: clamp(16px, 3vh, 24px);
 }
 
 .login-brand__icon {
   display: flex;
   filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.5));
+  /* scale icon on tiny screens */
+  width: clamp(26px, 5vw, 34px);
+  height: clamp(26px, 5vw, 34px);
+}
+
+.login-brand__icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .login-brand__name {
   font-family: 'Caviler', sans-serif;
-  font-size: 2.1rem;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
   font-weight: normal;
   color: #ffffff;
   letter-spacing: 0.04em;
@@ -129,31 +142,24 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  padding: 36px 36px 32px;
+  border-radius: clamp(16px, 4vw, 24px);
+  /* fluid padding so card breathes on desktop but tight on mobile */
+  padding: clamp(24px, 5vw, 36px) clamp(20px, 5vw, 36px) clamp(20px, 4vw, 32px);
   box-shadow:
     0 32px 64px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset,
     0 1px 0 rgba(255, 255, 255, 0.12) inset;
 }
 
-@media (max-width: 480px) {
-  .login-card {
-    padding: 28px 20px 24px;
-  }
-}
-
-
-
 /* ── Header ──────────────────────────────────────────────── */
 .login-header {
-  margin-bottom: 24px;
+  margin-bottom: clamp(16px, 3vh, 24px);
   text-align: center;
 }
 
 .login-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.75rem;
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
   font-weight: 700;
   color: #ffffff;
   line-height: 1.2;
@@ -161,7 +167,7 @@
 }
 
 .login-subtitle {
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
   color: rgba(255, 255, 255, 0.5);
   line-height: 1.5;
 }
@@ -170,7 +176,7 @@
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(12px, 2.5vw, 16px);
 }
 
 /* ── Animated name field (signup only) ───────────────────── */
@@ -203,10 +209,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .login-label {
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 2vw, 0.8rem);
   font-weight: 500;
   color: rgba(255, 255, 255, 0.65);
   letter-spacing: 0.02em;
@@ -214,9 +222,11 @@
 }
 
 .login-forgot {
-  font-size: 0.8rem;
+  font-size: clamp(0.75rem, 2vw, 0.8rem);
   color: rgba(124, 58, 237, 0.9);
   transition: color 0.15s ease;
+  /* Ensure tap target is big enough on mobile */
+  padding: 2px 0;
 }
 
 .login-forgot:hover {
@@ -246,18 +256,28 @@
 
 .login-input {
   width: 100%;
-  padding: 12px 14px 12px 42px;
+  /* fluid padding — taller touch target on mobile */
+  padding: clamp(11px, 2vw, 12px) 14px clamp(11px, 2vw, 12px) 42px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   color: #ffffff;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.9rem);
   font-family: 'Inter', sans-serif;
   transition:
     border-color 0.2s ease,
     background 0.2s ease,
     box-shadow 0.2s ease;
   outline: none;
+  /* Prevent iOS zoom on focus (font-size must be ≥16px OR we set this) */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* On very small screens bump to 16px to prevent iOS auto-zoom on focus */
+@media (max-width: 360px) {
+  .login-input {
+    font-size: 16px;
+  }
 }
 
 .login-input::placeholder {
@@ -295,10 +315,14 @@
   position: absolute;
   right: 12px;
   color: rgba(255, 255, 255, 0.35);
+  /* minimum 44×44 tap area on mobile */
+  min-width: 44px;
+  min-height: 44px;
   padding: 4px;
   border-radius: 6px;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: color 0.15s ease;
   cursor: pointer;
   background: none;
@@ -312,15 +336,21 @@
 /* ── Error ───────────────────────────────────────────────── */
 .login-error {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   padding: 10px 14px;
   background: rgba(244, 63, 94, 0.12);
   border: 1px solid rgba(244, 63, 94, 0.3);
   border-radius: 10px;
   color: #fb7185;
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
   animation: shake 0.4s ease;
+  line-height: 1.45;
+}
+
+.login-error svg {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 @keyframes shake {
@@ -337,10 +367,12 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 13px 24px;
+  /* minimum 44px height for touch accessibility */
+  padding: clamp(12px, 2.5vw, 13px) 24px;
+  min-height: 44px;
   background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.5vw, 0.95rem);
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   border-radius: 12px;
@@ -354,6 +386,7 @@
   box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 .login-submit::before {
@@ -396,9 +429,9 @@
 /* ── Switch mode ─────────────────────────────────────────── */
 .login-switch {
   text-align: center;
-  font-size: 0.875rem;
+  font-size: clamp(0.82rem, 2.2vw, 0.875rem);
   color: rgba(255, 255, 255, 0.45);
-  margin-top: 20px;
+  margin-top: clamp(14px, 3vw, 20px);
 }
 
 .login-switch__btn {
@@ -407,10 +440,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: inherit;
   font-family: 'Inter', sans-serif;
-  padding: 0;
+  padding: 2px 0;
   transition: color 0.15s ease;
+  /* Good tap target */
+  min-height: 32px;
 }
 
 .login-switch__btn:hover {
@@ -420,10 +455,11 @@
 
 /* ── Legal ───────────────────────────────────────────────── */
 .login-legal {
-  font-size: 0.78rem;
+  font-size: clamp(0.72rem, 2vw, 0.78rem);
   color: rgba(255, 255, 255, 0.3);
   text-align: center;
   line-height: 1.6;
+  padding: 0 8px;
 }
 
 .login-legal a {
@@ -434,4 +470,111 @@
 .login-legal a:hover {
   color: rgba(167, 139, 250, 1);
   text-decoration: underline;
+}
+
+/* ── Very small phones (≤360px) ──────────────────────────── */
+@media (max-width: 360px) {
+  .login-bg {
+    padding: 12px 10px;
+    align-items: flex-start;
+    padding-top: 24px;
+  }
+
+  .login-card {
+    border-radius: 14px;
+    padding: 20px 16px 18px;
+  }
+
+  .login-orb--1 {
+    width: 180px;
+    height: 180px;
+    top: -60px;
+    left: -60px;
+  }
+
+  .login-orb--2 {
+    width: 140px;
+    height: 140px;
+    bottom: -40px;
+    right: -40px;
+  }
+
+  .login-orb--3 {
+    display: none;
+  }
+}
+
+/* ── Portrait phones (≤480px) ────────────────────────────── */
+@media (max-width: 480px) {
+  .login-brand__name {
+    font-size: 1.7rem;
+  }
+
+  .login-title {
+    font-size: 1.35rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.82rem;
+  }
+
+  /* Collapse orbs to smaller sizes to avoid clipping */
+  .login-orb--1 {
+    filter: blur(60px);
+  }
+
+  .login-orb--2 {
+    filter: blur(60px);
+  }
+}
+
+/* ── Landscape phones (short viewport) ───────────────────── */
+@media (max-height: 600px) and (orientation: landscape) {
+  .login-bg {
+    align-items: flex-start;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .login-wrapper {
+    gap: 10px;
+  }
+
+  .login-brand {
+    margin-bottom: 10px;
+  }
+
+  .login-header {
+    margin-bottom: 10px;
+  }
+
+  .login-form {
+    gap: 10px;
+  }
+
+  .login-legal {
+    display: none; /* hide on tiny landscape to save vertical space */
+  }
+}
+
+/* ── Tablet (641px – 768px): wider card is fine ──────────── */
+@media (min-width: 641px) {
+  .login-wrapper {
+    max-width: 440px;
+  }
+}
+
+/* ── Desktop (≥769px): restore full desktop feel ─────────── */
+@media (min-width: 769px) {
+  .login-bg {
+    padding: 48px 24px;
+  }
+
+  .login-card {
+    padding: 36px 36px 32px;
+  }
+
+  .login-wrapper {
+    gap: 24px;
+  }
 }
