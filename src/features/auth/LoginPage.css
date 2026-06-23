@@ -137,6 +137,7 @@
 
 /* ── Card ────────────────────────────────────────────────── */
 .login-card {
+  position: relative;
   width: 100%;
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(24px);
@@ -223,14 +224,14 @@
 
 .login-forgot {
   font-size: clamp(0.75rem, 2vw, 0.8rem);
-  color: rgba(124, 58, 237, 0.9);
+  color: #a78bfa;
   transition: color 0.15s ease;
   /* Ensure tap target is big enough on mobile */
   padding: 2px 0;
 }
 
 .login-forgot:hover {
-  color: #a78bfa;
+  color: #c084fc;
 }
 
 /* ── Input wrap ──────────────────────────────────────────── */
@@ -577,4 +578,1104 @@
   .login-wrapper {
     gap: 24px;
   }
+}
+
+/* ============================================================
+   Forgot-Password Modal
+   ============================================================ */
+
+/* ── Overlay ─────────────────────────────────────────────── */
+.fp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(3, 0, 30, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fpOverlayIn 0.22s ease both;
+}
+
+@keyframes fpOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal card ──────────────────────────────────────────── */
+.fp-modal {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
+  padding: 36px 28px 28px;
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  animation: fpModalIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fpModalIn {
+  from { opacity: 0; transform: scale(0.88) translateY(20px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+/* ── Close button ────────────────────────────────────────── */
+.fp-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.fp-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+/* ── Icon ────────────────────────────────────────────────── */
+.fp-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(129, 140, 248, 0.12));
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 24px rgba(124, 58, 237, 0.25);
+  margin-bottom: 2px;
+}
+
+/* ── Title ───────────────────────────────────────────────── */
+.fp-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* ── Body message ────────────────────────────────────────── */
+.fp-message {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.fp-highlight {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+.fp-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  margin: 4px 0;
+}
+
+/* ── "Don't know area agents?" CTA chip ─────────────────── */
+.fp-agent-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(79, 70, 229, 0.15));
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  border-radius: 50px;
+  color: #c4b5fd;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  animation: fpPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes fpPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
+  50%       { box-shadow: 0 0 0 6px rgba(124, 58, 237, 0.12); }
+}
+
+.fp-agent-link:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.35), rgba(79, 70, 229, 0.28));
+  border-color: rgba(167, 139, 250, 0.7);
+  color: #e9d5ff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+  animation: none;
+}
+
+.fp-agent-link__text {
+  line-height: 1;
+}
+
+/* ── Dismiss button ──────────────────────────────────────── */
+.fp-dismiss {
+  margin-top: 4px;
+  padding: 10px 32px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+}
+
+.fp-dismiss:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(124, 58, 237, 0.45);
+}
+
+.fp-dismiss:active {
+  transform: translateY(0);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .fp-modal {
+    padding: 28px 18px 22px;
+    border-radius: 16px;
+  }
+  .fp-title {
+    font-size: 1.05rem;
+  }
+  .fp-message {
+    font-size: 0.82rem;
+  }
+}
+
+/* ============================================================
+   Find Area Agent Modal  (.fa-*)
+   ============================================================ */
+
+/* ── Overlay ─────────────────────────────────────────────── */
+.fa-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(3, 0, 30, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: fpOverlayIn 0.22s ease both;
+}
+
+/* ── Modal card ──────────────────────────────────────────── */
+.fa-modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 28px 24px 24px;
+  box-shadow:
+    0 48px 96px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: fpModalIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 58, 237, 0.3) transparent;
+}
+
+.fa-modal::-webkit-scrollbar {
+  width: 4px;
+}
+.fa-modal::-webkit-scrollbar-track { background: transparent; }
+.fa-modal::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.35);
+  border-radius: 4px;
+}
+
+/* Close button reuse — just reposition */
+.fa-close {
+  top: 14px !important;
+  right: 14px !important;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.fa-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 36px;  /* avoid overlap with close btn */
+}
+
+.fa-header__icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(79, 70, 229, 0.12));
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+}
+
+.fa-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 3px;
+  line-height: 1.2;
+}
+
+.fa-subtitle {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── GPS section ─────────────────────────────────────────── */
+.fa-gps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fa-detect-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 13px 20px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(79, 70, 229, 0.16));
+  border: 1px solid rgba(124, 58, 237, 0.45);
+  border-radius: 12px;
+  color: #c4b5fd;
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  animation: fpPulse 2.8s ease-in-out infinite;
+}
+
+.fa-detect-btn:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.38), rgba(79, 70, 229, 0.28));
+  border-color: rgba(167, 139, 250, 0.7);
+  color: #e9d5ff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.28);
+  animation: none;
+}
+
+/* GPS status strip */
+.fa-gps-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.4;
+  flex-wrap: wrap;
+}
+
+.fa-gps-status--loading {
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  color: #a78bfa;
+}
+
+.fa-gps-status--success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+}
+
+.fa-gps-status--error {
+  background: rgba(244, 63, 94, 0.09);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  color: #fb7185;
+}
+
+.fa-gps-status strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Spinner (reused from login-spinner style) */
+.fa-spinner {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  border: 2px solid rgba(167, 139, 250, 0.3);
+  border-top-color: #a78bfa;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Retry button */
+.fa-retry-btn {
+  margin-left: auto;
+  font-size: 0.78rem;
+  font-family: 'Inter', sans-serif;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.fa-retry-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+/* ── Agent list section ───────────────────────────────────── */
+.fa-agents-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fa-agents-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.fa-agents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Individual agent card ────────────────────────────────── */
+.fa-agent-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+}
+
+.fa-agent-card:hover {
+  background: rgba(124, 58, 237, 0.07);
+  border-color: rgba(124, 58, 237, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Avatar badge */
+.fa-agent-avatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Info column */
+.fa-agent-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  flex: 1;
+}
+
+.fa-agent-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  font-family: 'Space Grotesk', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fa-agent-title {
+  font-size: 0.75rem;
+  color: rgba(167, 139, 250, 0.8);
+  font-weight: 500;
+}
+
+/* Areas covered */
+.fa-agent-areas {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.45;
+  flex-wrap: wrap;
+}
+
+.fa-agent-areas svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Contact chips row */
+.fa-agent-contacts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.fa-contact-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.12s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.fa-contact-chip--phone {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  color: #6ee7b7;
+}
+
+.fa-contact-chip--phone:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
+  transform: translateY(-1px);
+}
+
+.fa-contact-chip--email {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  color: #a5b4fc;
+}
+
+.fa-contact-chip--email:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Availability row */
+.fa-agent-avail {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.32);
+  margin-top: 1px;
+}
+
+/* ── Footer note ─────────────────────────────────────────── */
+.fa-footer-note {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.28);
+  text-align: center;
+  line-height: 1.55;
+  margin: 0;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Mobile tweaks ───────────────────────────────────────── */
+@media (max-width: 400px) {
+  .fa-modal {
+    padding: 22px 14px 18px;
+    border-radius: 16px;
+  }
+  .fa-title {
+    font-size: 1rem;
+  }
+  .fa-agent-card {
+    padding: 12px 12px;
+  }
+  .fa-agent-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 0.72rem;
+  }
+  .fa-contact-chip {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
+}
+
+/* ── Empty state (no agent for detected area) ────────────── */
+.fa-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.fa-empty-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.fa-empty-title strong {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.fa-empty-sub {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.32);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 300px;
+}
+
+.login-settings-dock {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+}
+
+.login-settings-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 12, 42, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* inherit color so the span/svg picks it up */
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 8px 10px -6px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  /* Add transform back to transition for the button scale/translate */
+  transition: background 0.25s ease, border-color 0.25s ease,
+              color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  outline: none;
+}
+
+.login-settings-btn:hover {
+  background: rgba(15, 12, 42, 0.75);
+  border-color: rgba(167, 139, 250, 0.5);
+  color: #a78bfa;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 20px 25px -5px rgba(124, 58, 237, 0.25),
+    0 10px 10px -5px rgba(124, 58, 237, 0.15);
+}
+
+.login-settings-btn:active {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: rgba(167, 139, 250, 0.7);
+  color: #c4b5fd;
+  transform: translateY(0) scale(0.98);
+}
+
+.login-settings-btn--active {
+  border-color: rgba(167, 139, 250, 0.65);
+  color: #a78bfa;
+  background: rgba(124, 58, 237, 0.15);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 0 0 3px rgba(167, 139, 250, 0.15),
+    0 10px 25px -5px rgba(124, 58, 237, 0.25);
+}
+
+/* ── Gear span: owns the animation, never touched by the button ── */
+.settings-gear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  /* GPU-composited layer — animation runs independently of parent */
+  will-change: transform;
+  animation: cogRotate 10s linear infinite;
+  /* NO transition on transform ever */
+}
+
+/* SVG inherits color from button — no extra transform */
+.settings-gear svg {
+  display: block;
+}
+
+@keyframes cogRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Individual dock buttons (Language, Chatbot) */
+.login-dock-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 12, 42, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 8px 10px -6px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  /* Use targeted transitions — NOT 'all', which fights the slide-in animation */
+  transition: background 0.25s ease, border-color 0.25s ease,
+              color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  outline: none;
+  /* slide-in animation with forwards fill so hover can take over after */
+  animation: slideInDockBtn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.login-dock-btn:hover {
+  background: rgba(15, 12, 42, 0.75);
+  border-color: rgba(167, 139, 250, 0.5);
+  color: #a78bfa;
+  transform: translateY(-3px) scale(1.08);
+  box-shadow:
+    0 20px 25px -5px rgba(124, 58, 237, 0.25),
+    0 10px 10px -5px rgba(124, 58, 237, 0.15);
+}
+
+.login-dock-btn:active {
+  transform: translateY(0) scale(0.95) !important;
+}
+
+@keyframes slideInDockBtn {
+  from {
+    opacity: 0;
+    transform: translateX(20px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Adjust size on small screens */
+@media (max-width: 480px) {
+  .login-settings-dock {
+    right: 20px;
+    bottom: 20px;
+    gap: 8px;
+  }
+  .login-settings-btn,
+  .login-dock-btn {
+    width: 38px;
+    height: 38px;
+  }
+  .login-settings-btn svg,
+  .login-dock-btn svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   Language Selection Modal
+═══════════════════════════════════════════════════════ */
+
+/* Reuses fp-modal, fp-overlay, fp-title, fp-message, fp-close from the Forgot Password modal styles */
+
+.lang-modal {
+  max-width: 380px;
+  padding-bottom: 32px;
+}
+
+.lang-flag-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.lang-flag-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 22px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  flex: 0 0 auto;
+}
+
+.lang-flag-card:hover {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.45);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -8px rgba(124, 58, 237, 0.3);
+}
+
+.lang-flag-card--active {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.7);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.18), 0 12px 30px -8px rgba(124, 58, 237, 0.3);
+}
+
+.lang-flag-svg {
+  border-radius: 6px;
+  overflow: hidden;
+  display: block;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.lang-flag-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.01em;
+}
+
+.lang-flag-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.38);
+  letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════════
+   AI Chatbot Modal
+═══════════════════════════════════════════════════════ */
+
+.chatbot-overlay {
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 28px 90px;
+}
+
+@media (max-width: 520px) {
+  .chatbot-overlay {
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 0 80px;
+  }
+}
+
+.chatbot-modal {
+  width: 360px;
+  max-width: calc(100vw - 40px);
+  background: rgba(14, 11, 38, 0.92);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow:
+    0 40px 80px -16px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  animation: chatbotSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes chatbotSlideIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header */
+.chatbot-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.chatbot-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+}
+
+.chatbot-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.chatbot-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 2px;
+  letter-spacing: 0.01em;
+}
+
+.chatbot-online {
+  font-size: 0.7rem;
+  color: #4ade80;
+  font-family: 'Inter', sans-serif;
+}
+
+.chatbot-close {
+  position: static;
+  margin-left: auto;
+}
+
+/* Messages area */
+.chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 260px;
+  max-height: 320px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167, 139, 250, 0.25) transparent;
+}
+
+.chatbot-messages::-webkit-scrollbar { width: 4px; }
+.chatbot-messages::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.25);
+  border-radius: 99px;
+}
+
+/* Bubbles */
+.chatbot-bubble {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  max-width: 88%;
+  animation: bubbleIn 0.22s ease both;
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.chatbot-bubble--bot {
+  align-self: flex-start;
+}
+
+.chatbot-bubble--user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chatbot-bubble-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.chatbot-bubble-text {
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.chatbot-bubble--bot .chatbot-bubble-text {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.88);
+  border-bottom-left-radius: 4px;
+}
+
+.chatbot-bubble--user .chatbot-bubble-text {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.6), rgba(167, 139, 250, 0.5));
+  color: rgba(255, 255, 255, 0.95);
+  border-bottom-right-radius: 4px;
+}
+
+/* Typing indicator */
+.chatbot-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 16px 16px 16px 4px;
+}
+
+.chatbot-typing span {
+  width: 6px;
+  height: 6px;
+  background: rgba(167, 139, 250, 0.7);
+  border-radius: 50%;
+  animation: typingBounce 1.2s infinite;
+}
+
+.chatbot-typing span:nth-child(2) { animation-delay: 0.2s; }
+.chatbot-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Input row */
+.chatbot-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.chatbot-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.9);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.chatbot-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.chatbot-input:focus {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.chatbot-send-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+
+.chatbot-send-btn:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.55);
+}
+
+.chatbot-send-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+.chatbot-send-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }

@@ -2,17 +2,127 @@
 // LoginPage — Premium Auth Card (Sign In / Sign Up)
 // ============================================================
 
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/AuthContext'
 import './LoginPage.css'
 
 type Mode = 'signin' | 'signup'
 
+// ── Agent data keyed by area ─────────────────────────────────
+interface Agent {
+  id: string
+  name: string
+  title: string
+  phone: string
+  email: string
+  areas: string[]          // location names this agent covers
+  availability: string
+  badge: string            // initials for avatar
+  badgeColor: string
+}
+
+const ALL_AGENTS: Agent[] = [
+  {
+    id: 'a1',
+    name: 'Md. Rafiqul Islam',
+    title: 'Senior Area Agent',
+    phone: '+880 1711-234567',
+    email: 'rafiqul.islam@dsbd.gov.bd',
+    areas: ['Dhaka', 'Mirpur', 'Pallabi', 'Kafrul', 'Uttara'],
+    availability: 'Sun – Thu, 9 AM – 5 PM',
+    badge: 'RI',
+    badgeColor: '#7c3aed',
+  },
+  {
+    id: 'a2',
+    name: 'Fatema Begum',
+    title: 'Area Agent',
+    phone: '+880 1812-345678',
+    email: 'fatema.begum@dsbd.gov.bd',
+    areas: ['Chittagong', 'Agrabad', 'Halishahar', 'Patenga', 'Pahartali'],
+    availability: 'Sun – Thu, 9 AM – 5 PM',
+    badge: 'FB',
+    badgeColor: '#0e7490',
+  },
+  {
+    id: 'a3',
+    name: 'Kamal Hossain',
+    title: 'Area Agent',
+    phone: '+880 1912-456789',
+    email: 'kamal.hossain@dsbd.gov.bd',
+    areas: ['Sylhet', 'Beanibazar', 'Golapganj', 'Zakiganj'],
+    availability: 'Sun – Thu, 9 AM – 5 PM',
+    badge: 'KH',
+    badgeColor: '#b45309',
+  },
+  {
+    id: 'a4',
+    name: 'Nasrin Akter',
+    title: 'Area Agent',
+    phone: '+880 1611-567890',
+    email: 'nasrin.akter@dsbd.gov.bd',
+    areas: ['Rajshahi', 'Boalia', 'Motihar', 'Shah Makhdum', 'Paba'],
+    availability: 'Sun – Thu, 9 AM – 5 PM',
+    badge: 'NA',
+    badgeColor: '#be185d',
+  },
+  {
+    id: 'a5',
+    name: 'Jahangir Alam',
+    title: 'Area Agent',
+    phone: '+880 1511-678901',
+    email: 'jahangir.alam@dsbd.gov.bd',
+    areas: ['Khulna', 'Sonadanga', 'Khalishpur', 'Daulatpur', 'Rupsha'],
+    availability: 'Sun – Thu, 9 AM – 5 PM',
+    badge: 'JA',
+    badgeColor: '#065f46',
+  },
+  {
+    id: 'a6',
+    name: 'Roksana Parvin',
+    title: 'Area Agent',
+    phone: '+880 1411-789012',
+    email: 'roksana.parvin@dsbd.gov.bd',
+    areas: ['Barisal', 'Kotwali', 'Bandor', 'Kazirhat', 'Chanmari'],
+    availability: 'Sun – Thu, 9 AM – 5 PM',
+    badge: 'RP',
+    badgeColor: '#92400e',
+  },
+]
+
+type GpsState = 'idle' | 'requesting' | 'granted' | 'denied' | 'unavailable'
+
+// ── Match agents by detected city / locality ─────────────────
+function matchAgents(city: string): Agent[] {
+  const q = city.toLowerCase()
+  return ALL_AGENTS.filter(a =>
+    a.areas.some(area => area.toLowerCase().includes(q) || q.includes(area.toLowerCase()))
+  )
+}
+
+// ── Reverse-geocode coords → city name via open API ──────────
+async function reverseGeocode(lat: number, lon: number): Promise<string> {
+  const res = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+    { headers: { 'Accept-Language': 'en' } }
+  )
+  const data = await res.json()
+  return (
+    data.address?.city ||
+    data.address?.town ||
+    data.address?.county ||
+    data.address?.state ||
+    'Your Location'
+  )
+}
+
+// ============================================================
 export default function LoginPage() {
   const { signIn, signUp } = useAuth()
   const navigate = useNavigate()
 
+  // Auth state
   const [mode, setMode] = useState<Mode>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,17 +131,100 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
-  const resetForm = () => {
-    setEmail('')
-    setPassword('')
-    setDisplayName('')
-    setError(null)
+  // Forgot-password modal
+  const [showForgotModal, setShowForgotModal] = useState(false)
+
+  // Sign-up modal
+  const [showSignupModal, setShowSignupModal] = useState(false)
+
+  // Settings dock state
+  const [settingsExpanded, setSettingsExpanded] = useState(false)
+  const [isBengali, setIsBengali] = useState(false)
+
+  // Language selection modal
+  const [showLangModal, setShowLangModal] = useState(false)
+
+  // Chatbot modal and conversation log
+  const [showChatbotModal, setShowChatbotModal] = useState(false)
+  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string }>>([])
+  const [chatInput, setChatInput] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
+
+  // Find-agent modal
+  const [showAgentModal, setShowAgentModal] = useState(false)
+  const [gpsState, setGpsState] = useState<GpsState>('idle')
+  const [detectedCity, setDetectedCity] = useState<string>('')
+  const [nearbyAgents, setNearbyAgents] = useState<Agent[]>([])
+  const [geoError, setGeoError] = useState<string>('')
+
+  // ── Reset agent modal when opened ───────────────────────────
+  useEffect(() => {
+    if (showAgentModal) {
+      setGpsState('idle')
+      setDetectedCity('')
+      setNearbyAgents([])
+      setGeoError('')
+    }
+  }, [showAgentModal])
+
+  // ── Initialize Chatbot Messages on open ──────────────────────
+  useEffect(() => {
+    if (showChatbotModal) {
+      setChatMessages([
+        {
+          sender: 'bot',
+          text: isBengali
+            ? 'হ্যালো! আমি আপনার ডিএসবিডি এআই সহকারী। আপনার দৈনিক বাজেট, সক্রিয় ঋণ, বা অ্যাকাউন্ট কীভাবে তৈরি করবেন সে সম্পর্কে জিজ্ঞাসা করুন।'
+            : 'Hello! I am your DSBD AI Assistant. Ask me anything about your daily budgets, active loans, or how to register an account.'
+        }
+      ])
+      setIsTyping(false)
+      setChatInput('')
+    }
+  }, [showChatbotModal, isBengali])
+
+  // ── Auto-scroll chatbot messages to bottom ──────────────────
+  useEffect(() => {
+    const el = document.getElementById('chatbot-messages')
+    if (el) el.scrollTop = el.scrollHeight
+  }, [chatMessages, isTyping])
+
+  // ── GPS detection ───────────────────────────────────────────
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      setGpsState('unavailable')
+      setGeoError('Geolocation is not supported by your browser. Please enable location access and try again.')
+      setNearbyAgents([])
+      return
+    }
+    setGpsState('requesting')
+    setGeoError('')
+    setNearbyAgents([])
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        setGpsState('granted')
+        const city = await reverseGeocode(pos.coords.latitude, pos.coords.longitude)
+        setDetectedCity(city)
+        setNearbyAgents(matchAgents(city))
+      },
+      (err) => {
+        setGpsState('denied')
+        setNearbyAgents([])
+        if (err.code === err.PERMISSION_DENIED) {
+          setGeoError('Location access was denied. Please allow location permission and try again.')
+        } else {
+          setGeoError('Could not determine your location. Please try again.')
+        }
+      },
+      { timeout: 10000 }
+    )
   }
 
-  const switchMode = (next: Mode) => {
-    resetForm()
-    setMode(next)
+  // ── Auth helpers ────────────────────────────────────────────
+  const resetForm = () => {
+    setEmail(''); setPassword(''); setDisplayName(''); setError(null)
   }
+  const switchMode = (next: Mode) => { resetForm(); setMode(next) }
 
   const getErrorMessage = (code: string): string => {
     const map: Record<string, string> = {
@@ -50,13 +243,9 @@ export default function LoginPage() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-
     try {
-      if (mode === 'signin') {
-        await signIn(email, password)
-      } else {
-        await signUp(email, password, displayName)
-      }
+      if (mode === 'signin') { await signIn(email, password) }
+      else                   { await signUp(email, password, displayName) }
       navigate('/dashboard')
     } catch (err: unknown) {
       const code = (err as { code?: string }).code ?? ''
@@ -66,6 +255,44 @@ export default function LoginPage() {
     }
   }
 
+  // ── Chatbot send handler ─────────────────────────────────────
+  const handleChatSend = () => {
+    const text = chatInput.trim()
+    if (!text) return
+    const userMsg = { sender: 'user' as const, text }
+    setChatMessages(prev => [...prev, userMsg])
+    setChatInput('')
+    setIsTyping(true)
+    setTimeout(() => {
+      const q = text.toLowerCase()
+      let reply = isBengali
+        ? 'আমি দুঃখিত, আমি সেটি বুঝতে পারিনি। অনুগ্রহ করে বাজেট, ঋণ বা নিবন্ধন সম্পর্কে জিজ্ঞাসা করুন।'
+        : "I'm not sure about that. Try asking about budgets, loans, or account registration."
+      if (q.includes('budget') || q.includes('বাজেট')) {
+        reply = isBengali
+          ? 'আপনার বাজেট ট্র্যাক করতে ড্যাশবোর্ডে লগইন করুন এবং "বাজেট" বিভাগে যান।'
+          : 'To track your budget, log in and navigate to the Budget section in your dashboard.'
+      } else if (q.includes('loan') || q.includes('ঋণ')) {
+        reply = isBengali
+          ? 'আপনার সক্রিয় ঋণ দেখতে ড্যাশবোর্ডের "ঋণ" বিভাগে যান।'
+          : 'To manage your loans, go to the Loans section after signing in.'
+      } else if (q.includes('register') || q.includes('sign up') || q.includes('নিবন্ধন')) {
+        reply = isBengali
+          ? 'নিবন্ধন করতে আপনার এলাকা এজেন্টের সাথে যোগাযোগ করুন।'
+          : 'To register, please contact your Area Agent — they will create your account.'
+      } else if (q.includes('password') || q.includes('পাসওয়ার্ড')) {
+        reply = isBengali
+          ? 'পাসওয়ার্ড রিসেট করতে আপনার এলাকা এজেন্টের সাথে যোগাযোগ করুন।'
+          : 'To reset your password, contact your Area Agent for a secure identity verification.'
+      } else if (q.includes('hello') || q.includes('hi') || q.includes('হ্যালো') || q.includes('হাই')) {
+        reply = isBengali ? 'হ্যালো! আপনাকে কীভাবে সাহায্য করতে পারি?' : 'Hello! How can I help you today?'
+      }
+      setIsTyping(false)
+      setChatMessages(prev => [...prev, { sender: 'bot', text: reply }])
+    }, 1200)
+  }
+
+  // ============================================================
   return (
     <div className="login-bg">
       {/* Animated gradient orbs */}
@@ -76,7 +303,7 @@ export default function LoginPage() {
       <div className="login-wrapper">
         {/* Card */}
         <div className="login-card">
-          {/* Brand Logo inside the card */}
+          {/* Brand Logo */}
           <div className="login-brand">
             <div className="login-brand__icon">
               <svg viewBox="0 0 5000 4008" width="34" height="34" fill="none">
@@ -98,12 +325,14 @@ export default function LoginPage() {
           {/* Heading */}
           <div className="login-header">
             <h1 className="login-title">
-              {mode === 'signin' ? 'Secure Account Sign In' : 'Create Your Account'}
+              {mode === 'signin'
+                ? (isBengali ? 'নিরাপদ অ্যাকাউন্ট সাইন ইন' : 'Secure Account Sign In')
+                : (isBengali ? 'নতুন অ্যাকাউন্ট তৈরি করুন' : 'Create Your Account')}
             </h1>
             <p className="login-subtitle">
               {mode === 'signin'
-                ? 'Enter your credentials to access your financial dashboard'
-                : 'Set up your personal ledger to manage budgets and track loans'}
+                ? (isBengali ? 'আপনার ড্যাশবোর্ড অ্যাক্সেস করতে লগইন করুন' : 'Enter your credentials to access your financial dashboard')
+                : (isBengali ? 'আপনার বাজেট এবং ঋণ ট্র্যাক করতে খাতা তৈরি করুন' : 'Set up your personal ledger to manage budgets and track loans')}
             </p>
           </div>
 
@@ -112,7 +341,7 @@ export default function LoginPage() {
             {/* Name field — signup only */}
             <div className={`login-field-wrap ${mode === 'signup' ? 'login-field-wrap--visible' : ''}`}>
               <div className="login-field">
-                <label className="login-label" htmlFor="displayName">Full Name</label>
+                <label className="login-label" htmlFor="displayName">{isBengali ? 'পুরো নাম' : 'Full Name'}</label>
                 <div className="login-input-wrap">
                   <span className="login-input-icon">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -137,7 +366,7 @@ export default function LoginPage() {
 
             {/* Email */}
             <div className="login-field">
-              <label className="login-label" htmlFor="email">Email Address</label>
+              <label className="login-label" htmlFor="email">{isBengali ? 'ইমেল ঠিকানা' : 'Email Address'}</label>
               <div className="login-input-wrap">
                 <span className="login-input-icon">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -161,9 +390,16 @@ export default function LoginPage() {
             {/* Password */}
             <div className="login-field">
               <div className="login-label-row">
-                <label className="login-label" htmlFor="password">Password</label>
+                <label className="login-label" htmlFor="password">{isBengali ? 'পাসওয়ার্ড' : 'Password'}</label>
                 {mode === 'signin' && (
-                  <a href="#" className="login-forgot" tabIndex={-1}>Forgot password?</a>
+                  <button
+                    type="button"
+                    id="forgot-password-btn"
+                    className="login-forgot"
+                    onClick={() => setShowForgotModal(true)}
+                  >
+                    {isBengali ? 'পাসওয়ার্ড ভুলে গেছেন?' : 'Forgot password?'}
+                  </button>
                 )}
               </div>
               <div className="login-input-wrap">
@@ -177,7 +413,7 @@ export default function LoginPage() {
                   id="password"
                   className="login-input login-input--password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder={mode === 'signup' ? 'Min. 6 characters' : '••••••••'}
+                  placeholder={mode === 'signup' ? (isBengali ? 'কমপক্ষে ৬ অক্ষরের' : 'Min. 6 characters') : '••••••••'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
@@ -218,17 +454,12 @@ export default function LoginPage() {
             )}
 
             {/* Submit */}
-            <button
-              id="submit-login"
-              type="submit"
-              className="login-submit"
-              disabled={loading}
-            >
+            <button id="submit-login" type="submit" className="login-submit" disabled={loading}>
               {loading ? (
                 <span className="login-spinner" />
               ) : (
                 <>
-                  {mode === 'signin' ? 'Sign In' : 'Create Account'}
+                  {mode === 'signin' ? (isBengali ? 'সাইন ইন করুন' : 'Sign In') : (isBengali ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -239,23 +470,558 @@ export default function LoginPage() {
 
           {/* Footer switch */}
           <p className="login-switch">
-            {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+            {mode === 'signin'
+              ? (isBengali ? 'অ্যাকাউন্ট নেই? ' : "Don't have an account? ")
+              : (isBengali ? 'ইতিমধ্যে অ্যাকাউন্ট আছে? ' : 'Already have an account? ')}
             <button
               type="button"
               id="switch-mode"
               className="login-switch__btn"
-              onClick={() => switchMode(mode === 'signin' ? 'signup' : 'signin')}
+              onClick={() => {
+                if (mode === 'signin') {
+                  setShowSignupModal(true)
+                } else {
+                  switchMode('signin')
+                }
+              }}
             >
-              {mode === 'signin' ? 'Sign up' : 'Sign in'}
+              {mode === 'signin'
+                ? (isBengali ? 'নিবন্ধন করুন' : 'Sign up')
+                : (isBengali ? 'লগইন করুন' : 'Sign in')}
             </button>
           </p>
         </div>
 
         <p className="login-legal">
-          By continuing, you agree to our{' '}
-          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          {isBengali ? (
+            <>
+              চালিয়ে যাওয়ার মাধ্যমে, আপনি আমাদের <a href="#">পরিষেবার শর্তাবলী</a> এবং <a href="#">গোপনীয়তা নীতিতে</a> সম্মত হচ্ছেন।
+            </>
+          ) : (
+            <>
+              By continuing, you agree to our{' '}
+              <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </>
+          )}
         </p>
       </div>
+
+      {/* Settings Dock */}
+      <div className={`login-settings-dock ${settingsExpanded ? 'login-settings-dock--expanded' : ''}`}>
+        {settingsExpanded && (
+          <>
+            {/* Chatbot Button */}
+            <button
+              type="button"
+              className="login-dock-btn"
+              onClick={() => { setShowChatbotModal(true); setSettingsExpanded(false) }}
+              aria-label="Open AI Chatbot"
+              title={isBengali ? 'এআই সহকারী' : 'AI Assistant'}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </button>
+
+            {/* Language Button */}
+            <button
+              type="button"
+              className="login-dock-btn"
+              onClick={() => { setShowLangModal(true); setSettingsExpanded(false) }}
+              aria-label="Change Language"
+              title={isBengali ? 'ভাষা পরিবর্তন করুন' : 'Change Language'}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </button>
+          </>
+        )}
+
+        {/* Toggle Settings Gear */}
+        <button
+          type="button"
+          className={`login-settings-btn ${settingsExpanded ? 'login-settings-btn--active' : ''}`}
+          onClick={() => setSettingsExpanded(!settingsExpanded)}
+          aria-label="Toggle Settings Menu"
+        >
+          {/* Wrapper span carries the spin — completely isolated from button transforms */}
+          <span className="settings-gear">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════
+          Language Selection Modal
+      ══════════════════════════════════════════════════════ */}
+      {showLangModal && (
+        <div
+          className="fp-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="lang-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowLangModal(false) }}
+        >
+          <div className="fp-modal lang-modal">
+            <button type="button" className="fp-close" onClick={() => setShowLangModal(false)} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            <h2 id="lang-title" className="fp-title">{isBengali ? 'ভাষা নির্বাচন করুন' : 'Select Language'}</h2>
+            <p className="fp-message">{isBengali ? 'আপনার পছন্দের ভাষাটি বেছে নিন।' : 'Choose your preferred language.'}</p>
+
+            <div className="lang-flag-row">
+              {/* English / USA */}
+              <button
+                type="button"
+                className={`lang-flag-card ${!isBengali ? 'lang-flag-card--active' : ''}`}
+                onClick={() => { setIsBengali(false); setShowLangModal(false) }}
+                aria-label="English"
+              >
+                {/* USA Flag SVG */}
+                <svg viewBox="0 0 60 40" width="64" height="44" xmlns="http://www.w3.org/2000/svg" className="lang-flag-svg">
+                  <rect width="60" height="40" fill="#B22234"/>
+                  <rect y="3.08" width="60" height="3.08" fill="white"/>
+                  <rect y="9.23" width="60" height="3.08" fill="white"/>
+                  <rect y="15.38" width="60" height="3.08" fill="white"/>
+                  <rect y="21.54" width="60" height="3.08" fill="white"/>
+                  <rect y="27.69" width="60" height="3.08" fill="white"/>
+                  <rect y="33.85" width="60" height="3.08" fill="white"/>
+                  <rect width="24" height="21.54" fill="#3C3B6E"/>
+                  {[0,1,2,3,4].map(row => [0,1,2,3,4,5].slice(0, row % 2 === 0 ? 6 : 5).map((col, i) => (
+                    <circle key={`${row}-${i}`} cx={(row % 2 === 0 ? col * 4 + 2 : col * 4 + 4)} cy={row * 4 + 2.5} r="1" fill="white" />
+                  )))}
+                </svg>
+                <span className="lang-flag-label">English</span>
+                <span className="lang-flag-sub">United States</span>
+              </button>
+
+              {/* Bengali / Bangladesh */}
+              <button
+                type="button"
+                className={`lang-flag-card ${isBengali ? 'lang-flag-card--active' : ''}`}
+                onClick={() => { setIsBengali(true); setShowLangModal(false) }}
+                aria-label="Bengali"
+              >
+                {/* Bangladesh Flag SVG */}
+                <svg viewBox="0 0 60 40" width="64" height="44" xmlns="http://www.w3.org/2000/svg" className="lang-flag-svg">
+                  <rect width="60" height="40" fill="#006A4E"/>
+                  <circle cx="28" cy="20" r="12" fill="#F42A41"/>
+                </svg>
+                <span className="lang-flag-label">বাংলা</span>
+                <span className="lang-flag-sub">Bangladesh</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════
+          AI Chatbot Modal
+      ══════════════════════════════════════════════════════ */}
+      {showChatbotModal && (
+        <div
+          className="fp-overlay chatbot-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chatbot-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowChatbotModal(false) }}
+        >
+          <div className="chatbot-modal">
+            {/* Header */}
+            <div className="chatbot-header">
+              <div className="chatbot-avatar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                </svg>
+              </div>
+              <div className="chatbot-header-text">
+                <h2 id="chatbot-title" className="chatbot-title">{isBengali ? 'ডিএসবিডি এআই সহকারী' : 'DSBD AI Assistant'}</h2>
+                <span className="chatbot-online">{isBengali ? '● অনলাইন' : '● Online'}</span>
+              </div>
+              <button type="button" className="fp-close chatbot-close" onClick={() => setShowChatbotModal(false)} aria-label="Close">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="chatbot-messages" id="chatbot-messages">
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`chatbot-bubble chatbot-bubble--${msg.sender}`}>
+                  {msg.sender === 'bot' && (
+                    <span className="chatbot-bubble-avatar">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                      </svg>
+                    </span>
+                  )}
+                  <span className="chatbot-bubble-text">{msg.text}</span>
+                </div>
+              ))}
+              {isTyping && (
+                <div className="chatbot-bubble chatbot-bubble--bot">
+                  <span className="chatbot-bubble-avatar">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                  </span>
+                  <span className="chatbot-typing">
+                    <span/><span/><span/>
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Input */}
+            <div className="chatbot-input-row">
+              <input
+                className="chatbot-input"
+                type="text"
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleChatSend()}
+                placeholder={isBengali ? 'আপনার প্রশ্ন লিখুন…' : 'Type a message…'}
+                aria-label="Chat input"
+              />
+              <button
+                type="button"
+                className="chatbot-send-btn"
+                onClick={handleChatSend}
+                disabled={!chatInput.trim() || isTyping}
+                aria-label="Send"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════
+          Forgot Password Modal
+      ══════════════════════════════════════════════════════ */}
+      {showForgotModal && (
+        <div
+          className="fp-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="fp-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowForgotModal(false) }}
+        >
+          <div className="fp-modal">
+            {/* Close */}
+            <button type="button" id="fp-close" className="fp-close" onClick={() => setShowForgotModal(false)} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            {/* Icon */}
+            <div className="fp-icon-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="url(#fpGrad)" strokeWidth="1.6" />
+                <path d="M12 7v6M12 15.5v1" stroke="url(#fpGrad)" strokeWidth="1.8" strokeLinecap="round" />
+                <defs>
+                  <linearGradient id="fpGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#7c3aed" />
+                    <stop offset="1" stopColor="#818cf8" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <h2 id="fp-title" className="fp-title">Password Reset</h2>
+
+            <p className="fp-message">
+              To reset your password, please contact your{' '}
+              <strong className="fp-highlight">Area Agent</strong>. They are authorised
+              to verify your identity and initiate a secure password reset on your behalf.
+            </p>
+
+            <div className="fp-divider" />
+
+            {/* CTA → opens agent finder */}
+            <button
+              type="button"
+              id="find-agent-link"
+              className="fp-agent-link"
+              onClick={() => { setShowForgotModal(false); setShowAgentModal(true) }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="9" r="4" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              <span className="fp-agent-link__text">Don't know your Area Agent?</span>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+
+            <button type="button" id="fp-dismiss" className="fp-dismiss" onClick={() => setShowForgotModal(false)}>
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════
+          Sign Up Modal
+      ══════════════════════════════════════════════════════ */}
+      {showSignupModal && (
+        <div
+          className="fp-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="su-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowSignupModal(false) }}
+        >
+          <div className="fp-modal">
+            {/* Close */}
+            <button type="button" id="su-close" className="fp-close" onClick={() => setShowSignupModal(false)} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            {/* Icon */}
+            <div className="fp-icon-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="url(#suGrad)" strokeWidth="1.6" />
+                <path d="M12 7v6M12 15.5v1" stroke="url(#suGrad)" strokeWidth="1.8" strokeLinecap="round" />
+                <defs>
+                  <linearGradient id="suGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#7c3aed" />
+                    <stop offset="1" stopColor="#818cf8" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <h2 id="su-title" className="fp-title">Account Creation</h2>
+
+            <p className="fp-message">
+              To create an account, please contact your{' '}
+              <strong className="fp-highlight">Area Agent</strong>. They are authorised
+              to register new users and set up your ledger.
+            </p>
+
+            <div className="fp-divider" />
+
+            {/* CTA → opens agent finder */}
+            <button
+              type="button"
+              id="su-find-agent-link"
+              className="fp-agent-link"
+              onClick={() => { setShowSignupModal(false); setShowAgentModal(true) }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="9" r="4" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              <span className="fp-agent-link__text">Don't know your Area Agent?</span>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+
+            <button type="button" id="su-dismiss" className="fp-dismiss" onClick={() => setShowSignupModal(false)}>
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+
+
+
+      {/* ══════════════════════════════════════════════════════
+          Find Area Agent Modal
+      ══════════════════════════════════════════════════════ */}
+      {showAgentModal && (
+        <div
+          className="fa-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="fa-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowAgentModal(false) }}
+        >
+          <div className="fa-modal">
+            {/* Close */}
+            <button type="button" id="fa-close" className="fp-close fa-close" onClick={() => setShowAgentModal(false)} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            {/* Header */}
+            <div className="fa-header">
+              <div className="fa-header__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="url(#faGrad)" strokeWidth="1.7" strokeLinejoin="round" />
+                  <circle cx="12" cy="9" r="2.5" stroke="url(#faGrad)" strokeWidth="1.7" />
+                  <defs>
+                    <linearGradient id="faGrad" x1="5" y1="2" x2="19" y2="22" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#7c3aed" />
+                      <stop offset="1" stopColor="#818cf8" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <div>
+                <h2 id="fa-title" className="fa-title">Find Your Area Agent</h2>
+                <p className="fa-subtitle">Locate the agent responsible for your area</p>
+              </div>
+            </div>
+
+            {/* GPS Section */}
+            <div className="fa-gps-section">
+              {gpsState === 'idle' && (
+                <button type="button" id="fa-detect-btn" className="fa-detect-btn" onClick={handleDetectLocation}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+                    <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+                  </svg>
+                  Detect My Location Automatically
+                </button>
+              )}
+
+              {gpsState === 'requesting' && (
+                <div className="fa-gps-status fa-gps-status--loading">
+                  <span className="fa-spinner" />
+                  <span>Detecting your location…</span>
+                </div>
+              )}
+
+              {gpsState === 'granted' && detectedCity && (
+                <div className="fa-gps-status fa-gps-status--success">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M5 8l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Location detected: <strong>{detectedCity}</strong></span>
+                  <button type="button" className="fa-retry-btn" onClick={handleDetectLocation}>Retry</button>
+                </div>
+              )}
+
+              {(gpsState === 'denied' || gpsState === 'unavailable') && (
+                <div className="fa-gps-status fa-gps-status--error">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M8 5v3M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                  <span>{geoError}</span>
+                  <button type="button" className="fa-retry-btn" onClick={handleDetectLocation}>Retry</button>
+                </div>
+              )}
+            </div>
+
+            {/* Agent list — only shown after successful GPS */}
+            {gpsState === 'granted' && nearbyAgents.length > 0 && (
+              <div className="fa-agents-section">
+                <p className="fa-agents-label">
+                  {nearbyAgents.length} agent{nearbyAgents.length > 1 ? 's' : ''} serving <strong>{detectedCity}</strong>
+                </p>
+                <div className="fa-agents-list">
+                  {nearbyAgents.map(agent => (
+                    <div key={agent.id} className="fa-agent-card">
+                      {/* Avatar */}
+                      <div
+                        className="fa-agent-avatar"
+                        style={{ background: `linear-gradient(135deg, ${agent.badgeColor}cc, ${agent.badgeColor}66)`, borderColor: `${agent.badgeColor}55` }}
+                      >
+                        {agent.badge}
+                      </div>
+
+                      {/* Info */}
+                      <div className="fa-agent-info">
+                        <div className="fa-agent-name">{agent.name}</div>
+                        <div className="fa-agent-title">{agent.title}</div>
+
+                        {/* Areas covered */}
+                        <div className="fa-agent-areas">
+                          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1C5.24 1 3 3.24 3 6c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                            <circle cx="8" cy="6" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+                          </svg>
+                          <span>{agent.areas.join(' · ')}</span>
+                        </div>
+
+                        {/* Contact row */}
+                        <div className="fa-agent-contacts">
+                          <a href={`tel:${agent.phone}`} className="fa-contact-chip fa-contact-chip--phone">
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                              <path d="M3 2h3l1.5 3.5-1.5 1A9 9 0 0010.5 9l1-1.5L15 9v3a1 1 0 01-1 1C6.268 13 3 9.73 3 3a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+                            </svg>
+                            {agent.phone}
+                          </a>
+                          <a href={`mailto:${agent.email}`} className="fa-contact-chip fa-contact-chip--email">
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                              <rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.4" />
+                              <path d="M1 6l7 4 7-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                            </svg>
+                            Email
+                          </a>
+                        </div>
+
+                        {/* Availability */}
+                        <div className="fa-agent-avail">
+                          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+                            <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.4" />
+                            <path d="M8 5v3.5l2.5 1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                          </svg>
+                          {agent.availability}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* No agent found for detected area */}
+            {gpsState === 'granted' && nearbyAgents.length === 0 && detectedCity && (
+              <div className="fa-empty-state">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="9" r="4" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+                  <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <p className="fa-empty-title">No agent found for <strong>{detectedCity}</strong></p>
+                <p className="fa-empty-sub">
+                  There is currently no assigned area agent for your location.
+                  Please contact the DSBD helpline for assistance.
+                </p>
+              </div>
+            )}
+
+            {/* Footer note */}
+            <p className="fa-footer-note">
+              Area agents are available during office hours. For urgent matters, call the DSBD helpline.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
