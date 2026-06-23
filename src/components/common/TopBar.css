@@ -1,0 +1,32 @@
+.top-bar {
+  background-color: #B2BEB5;
+  color: #111827;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-family: sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 32px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-bar span {
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .top-bar {
+    font-size: 11px;
+    padding: 10px 12px;
+  }
+}
