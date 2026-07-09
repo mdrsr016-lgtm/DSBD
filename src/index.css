@@ -5,8 +5,9 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply bg-black text-white m-0 p-0 font-inter antialiased;
+  html, body, #root {
+    @apply h-full w-full bg-black text-white m-0 p-0 font-inter antialiased;
+    min-height: 100vh;
   }
 
   /* Hide scrollbar */
@@ -18,7 +19,7 @@
 
 @layer components {
   .app-container {
-    @apply max-w-[428px] min-h-screen bg-deep-black mx-auto overflow-x-hidden relative;
+    @apply w-full max-w-[428px] min-h-screen mx-auto overflow-x-hidden relative;
   }
 
   .glass-card {
