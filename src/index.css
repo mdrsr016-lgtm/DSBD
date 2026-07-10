@@ -19,7 +19,7 @@
 
 @layer components {
   .app-container {
-    @apply w-full max-w-[428px] min-h-screen mx-auto overflow-x-hidden relative;
+    @apply w-full max-w-7xl min-h-screen mx-auto overflow-x-hidden relative;
   }
 
   .glass-card {

@@ -1,4 +1,5 @@
 import { TopNav } from './components/layout/TopNav';
+import { BottomNav } from './components/layout/BottomNav';
 
 function App() {
   return (
@@ -15,10 +16,13 @@ function App() {
 
       {/* Centered Mobile Container for Content */}
       <div className="app-container relative z-10 flex flex-col flex-1">
-        <main className="px-4 py-6 pb-32 flex-1">
+        <main className="px-6 md:px-12 py-6 pb-32 flex-1">
           {/* Ready for your components */}
         </main>
       </div>
+      
+      {/* Floating Bottom Navigation */}
+      <BottomNav />
     </div>
   )
 }
