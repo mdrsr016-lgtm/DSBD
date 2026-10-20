@@ -1,16 +1,18 @@
 import { LayoutDashboard, Wallet, Target, Bell, User } from 'lucide-react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-export function BottomNav() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+interface BottomNavProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
 
+export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   const navItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { id: 'budget', icon: Wallet, label: 'Budget ৳' },
-    { id: 'plans', icon: Target, label: 'Plans' },
-    { id: 'notifications', icon: Bell, label: 'Notifications' },
-    { id: 'profile', icon: User, label: 'Profile' },
+    { id: 'dashboard',     icon: LayoutDashboard, label: 'Dashboard' },
+    { id: 'budget',        icon: Wallet,           label: 'Budget ৳' },
+    { id: 'plans',         icon: Target,           label: 'Plans' },
+    { id: 'notifications', icon: Bell,             label: 'Alerts' },
+    { id: 'profile',       icon: User,             label: 'Profile' },
   ];
 
   return (
@@ -19,16 +21,16 @@ export function BottomNav() {
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           const Icon = item.icon;
-          
+
           return (
             <motion.button
               layout
-              transition={{ type: "spring", stiffness: 260, damping: 26 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 26 }}
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => onTabChange(item.id)}
               className={`relative flex items-center justify-center h-12 rounded-full transition-colors duration-300 z-10 ${
-                isActive 
-                  ? 'text-[#1A1A24] px-5' 
+                isActive
+                  ? 'text-[#1A1A24] px-5'
                   : 'text-white/60 hover:text-white w-12'
               }`}
             >
@@ -37,20 +39,20 @@ export function BottomNav() {
                   layoutId="active-pill"
                   className="absolute inset-0 bg-[#E2E2E2] rounded-full -z-10"
                   initial={false}
-                  transition={{ type: "spring", stiffness: 260, damping: 26 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 26 }}
                 />
               )}
-              
+
               <Icon className={`w-[22px] h-[22px] flex-shrink-0 transition-colors duration-300 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
-              
-              <motion.span 
+
+              <motion.span
                 layout
                 className={`font-semibold overflow-hidden whitespace-nowrap ${
-                  isActive 
-                    ? 'ml-2 opacity-100 text-[14px]' 
+                  isActive
+                    ? 'ml-2 opacity-100 text-[14px]'
                     : 'w-0 ml-0 opacity-0 text-[0px]'
                 }`}
-                transition={{ type: "spring", stiffness: 260, damping: 26 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 26 }}
               >
                 {item.label}
               </motion.span>
