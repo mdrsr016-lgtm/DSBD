@@ -36,11 +36,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-deep-black flex items-center justify-center relative overflow-hidden p-4">
-      {/* Background blobs */}
-      <div className="blob-cyan absolute top-[-10%] right-[-10%] w-[400px] h-[400px]" />
-      <div className="blob-rose absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px]" />
-      <div className="absolute inset-0 backdrop-blur-[100px] z-0 pointer-events-none" />
+    <div className="min-h-screen w-full bg-black flex items-center justify-center relative overflow-hidden p-4">
 
       <div className="relative z-10 w-full max-w-md flex flex-col gap-5">
         {/* ── Logo ── */}
