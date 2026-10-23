@@ -19,6 +19,28 @@ export interface Transaction {
   category: string;
 }
 
+export interface MemberLoan {
+  currentLoan: number;
+  status: 'Active' | 'Pending' | 'Paid';
+  nextPaymentDate: string;
+  isEligibleForAnotherLoan: boolean;
+}
+
+export const MEMBER_LOAN_DATA: Record<string, MemberLoan> = {
+  'usr-006': {
+    currentLoan: 25_000,
+    status: 'Active',
+    nextPaymentDate: 'Nov 15, 2026',
+    isEligibleForAnotherLoan: true,
+  },
+  default: {
+    currentLoan: 25_000,
+    status: 'Active',
+    nextPaymentDate: 'Nov 15, 2026',
+    isEligibleForAnotherLoan: true,
+  },
+};
+
 export const MEMBER_FINANCIALS: Record<string, FinancialSnapshot> = {
   'usr-006': {   // Tania Begum – member
     bank:     1_24_580,

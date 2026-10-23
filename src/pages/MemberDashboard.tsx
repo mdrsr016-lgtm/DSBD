@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { Sun, Sunrise, Sunset, Moon, ShieldCheck } from 'lucide-react';
+import { Sun, Sunrise, Sunset, Moon, ShieldCheck, Database, Calendar, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { MEMBER_LOAN_DATA } from '../data/memberFinancials';
 
 // ── Animation variants ──────────────────────────────────────────────────────
 const container = {
@@ -47,6 +48,8 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
     day: 'numeric',
     year: 'numeric',
   }).format(new Date());
+
+  const loanData = MEMBER_LOAN_DATA[user.id] ?? MEMBER_LOAN_DATA.default;
 
   return (
     <motion.div
@@ -143,6 +146,71 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
           }}
         />
       </motion.div>
+
+      {/* ── E. Member-Only Section: Current Loan & Eligibility Banner ─── */}
+      {user.role === 'member' && (
+        <motion.div variants={fadeUp} className="mt-8 sm:mt-10 flex flex-col gap-5 w-full max-w-xl">
+          {/* Current Loan Card */}
+          <div className="w-full bg-[#03070E] border border-[#162A40] rounded-2xl p-5 sm:p-6 shadow-xl">
+            {/* Top row */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <Database className="w-5 h-5 sm:w-6 sm:h-6 text-[#22D3EE] flex-shrink-0" />
+                <h3 className="font-jakarta font-semibold text-white text-base sm:text-lg tracking-tight">
+                  Current Loan
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#10B981] flex-shrink-0" />
+                <span className="font-inter font-medium text-xs sm:text-sm text-[#10B981]">
+                  {loanData.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Loan Amount */}
+            <div className="mt-4 sm:mt-5">
+              <p className="font-jakarta font-bold text-3xl sm:text-[2.25rem] text-white tracking-tight flex items-baseline gap-1.5">
+                <span className="font-semibold text-2xl sm:text-3xl select-none">৳</span>
+                <span>{new Intl.NumberFormat('en-IN').format(loanData.currentLoan)}</span>
+              </p>
+            </div>
+
+            {/* Subtle Divider Line */}
+            <div className="w-full h-px bg-[#152336] my-4 sm:my-5" />
+
+            {/* Bottom row: Next payment | Date */}
+            <div className="flex items-center justify-between text-xs sm:text-sm">
+              <div className="flex items-center gap-2 text-[#94A3B8]">
+                <Calendar className="w-4 h-4 text-[#38BDF8] flex-shrink-0" />
+                <span className="font-inter font-normal">Next payment</span>
+              </div>
+              <span className="font-inter font-medium text-[#F8FAFC]">
+                {loanData.nextPaymentDate}
+              </span>
+            </div>
+          </div>
+
+          {/* Eligibility Row (Directly on pure black canvas) */}
+          {loanData.isEligibleForAnotherLoan && (
+            <div className="w-full flex items-center justify-between px-1 flex-wrap gap-3">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#22D3EE] flex-shrink-0" />
+                <span className="font-jakarta font-semibold text-white text-sm sm:text-base tracking-tight">
+                  You're eligible for another loan
+                </span>
+              </div>
+              <button
+                onClick={() => _props?.onNavigate?.('plans')}
+                className="group font-inter font-medium text-xs sm:text-sm text-[#22D3EE] hover:text-[#38BDF8] flex items-center gap-1.5 transition-colors focus:outline-none cursor-pointer"
+              >
+                <span>Check offer</span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+              </button>
+            </div>
+          )}
+        </motion.div>
+      )}
     </motion.div>
   );
 }

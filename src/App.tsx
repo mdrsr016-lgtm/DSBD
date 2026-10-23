@@ -72,14 +72,14 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black relative overflow-hidden flex flex-col items-center">
+    <div className="min-h-screen w-full bg-black relative overflow-x-hidden flex flex-col items-center">
 
       {/* Top Navigation */}
       <TopNav onNavigate={(tab) => navigateTo(tab)} />
 
       {/* Swipeable Page Area */}
       <div
-        className="app-container relative z-10 flex flex-col flex-1 overflow-hidden"
+        className="app-container relative z-10 flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
