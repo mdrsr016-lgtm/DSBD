@@ -132,7 +132,7 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
         className="flex items-center gap-3 sm:gap-4 mt-5 sm:mt-6"
       >
         <p className="font-inter text-sm sm:text-base md:text-[1.05rem] text-[#94A3B8] font-normal tracking-normal leading-normal">
-          Welcome back to your dashboard
+          Welcome to TrustBank
         </p>
 
         {/* Short, subtle cyan-to-teal accent line beside the message */}
