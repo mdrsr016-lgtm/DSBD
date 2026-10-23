@@ -1,4 +1,4 @@
-import { Landmark, ChevronDown, LogOut, Settings, User } from 'lucide-react';
+import { Landmark, TrendingUp, ChevronDown, LogOut, Settings, User } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { ROLE_COLORS } from '../../data/demoAccounts';
@@ -12,6 +12,7 @@ export function TopNav({ onNavigate }: TopNavProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const colors = user ? ROLE_COLORS[user.role] : null;
+  const isManagement = user?.role === 'founder' || user?.role === 'admin';
 
   return (
     <header className="w-full z-50 relative pointer-events-none bg-transparent">
@@ -19,14 +20,28 @@ export function TopNav({ onNavigate }: TopNavProps) {
         {/* Logo & Title */}
         <div className="flex flex-col items-start pointer-events-auto cursor-pointer" onClick={() => onNavigate?.('dashboard')}>
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-[#22D3EE] flex-shrink-0" />
+            {isManagement ? (
+              <TrendingUp className="w-7 h-7 sm:w-8 sm:h-8 text-[#22D3EE] flex-shrink-0" />
+            ) : (
+              <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-[#22D3EE] flex-shrink-0" />
+            )}
             <span className="font-jakarta font-extrabold text-2xl sm:text-[1.75rem] text-white tracking-tight leading-none">
-              Trust<span className="text-[#22D3EE]">Bank</span>
+              {isManagement ? (
+                <>
+                  Grow <span className="text-[#22D3EE]">fin</span>
+                </>
+              ) : (
+                <>
+                  Trust<span className="text-[#22D3EE]">Bank</span>
+                </>
+              )}
             </span>
           </div>
-          <p className="font-inter text-[11px] sm:text-xs text-[#64748B] mt-1.5 tracking-tight">
-            Developed By <span className="text-[#94A3B8] font-medium">Dhaka Bank PLC</span>
-          </p>
+          {!isManagement && (
+            <p className="font-inter text-[11px] sm:text-xs text-[#64748B] mt-1.5 tracking-tight">
+              Developed By <span className="text-[#94A3B8] font-medium">Dhaka Bank PLC</span>
+            </p>
+          )}
         </div>
 
         {/* Profile & Dropdown */}

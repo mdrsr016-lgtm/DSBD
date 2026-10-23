@@ -135,7 +135,7 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
         className="flex items-center gap-3 sm:gap-4 mt-5 sm:mt-6"
       >
         <p className="font-inter text-sm sm:text-base md:text-[1.05rem] text-[#94A3B8] font-normal tracking-normal leading-normal">
-          Welcome to TrustBank
+          Welcome to {user.role === 'founder' || user.role === 'admin' ? 'Grow fin' : 'TrustBank'}
         </p>
 
         {/* Short, subtle cyan-to-teal accent line beside the message */}
@@ -150,8 +150,8 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
       {/* ── E. Member-Only Section: Current Loan & Eligibility Banner ─── */}
       {user.role === 'member' && (
         <motion.div variants={fadeUp} className="mt-8 sm:mt-10 flex flex-col gap-5 w-full max-w-[800px]">
-          {/* Current Loan Card (Reduced height: sleek ~2.8:1 aspect ratio with compact vertical footprint) */}
-          <div className="w-full bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[24px] sm:rounded-[28px] p-4 sm:p-5 md:py-5 md:px-7 aspect-[800/285] min-h-[250px] flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
+          {/* Current Loan Card */}
+          <div className="w-full bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 md:p-7 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
             {/* Top row: Icon Badge + Titles | Status */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5 sm:gap-3">

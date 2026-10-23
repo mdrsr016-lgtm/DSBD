@@ -5,10 +5,32 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
   html, body, #root {
     @apply h-full w-full bg-black text-white m-0 p-0 font-inter antialiased;
     background-color: #000000 !important;
     min-height: 100vh;
+  }
+
+  /* Fix browser autofill / autocomplete white background in dark mode */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active {
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: #F8FAFC !important;
+    caret-color: #F8FAFC !important;
+    transition: background-color 5000000s ease-in-out 0s;
+  }
+
+  input:-moz-autofill,
+  input:-moz-autofill-preview {
+    filter: none;
+    -moz-text-fill-color: #F8FAFC !important;
   }
 
   /* Hide scrollbar */
