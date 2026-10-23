@@ -1,5 +1,5 @@
 import { LayoutDashboard, Wallet, Target, Bell, User } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface BottomNavProps {
   activeTab: string;
@@ -17,7 +17,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <nav className="flex items-center justify-between w-[94vw] max-w-[460px] p-2 bg-transparent backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/5 relative overflow-hidden mx-auto">
+      <nav className="flex items-center justify-between w-[94vw] max-w-[460px] p-2 bg-[#090D14]/90 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/10 relative overflow-hidden mx-auto">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           const Icon = item.icon;
@@ -25,12 +25,12 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
           return (
             <motion.button
               layout
-              transition={{ type: 'spring', stiffness: 260, damping: 26 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 30 }}
               key={item.id}
               onClick={() => onTabChange(item.id)}
-              className={`relative flex items-center justify-center h-12 rounded-full transition-colors duration-300 z-10 ${
+              className={`relative flex items-center justify-center h-12 rounded-full transition-colors duration-200 z-10 select-none ${
                 isActive
-                  ? 'text-[#1A1A24] px-5'
+                  ? 'text-[#1A1A24] w-[136px]'
                   : 'text-white/60 hover:text-white w-12'
               }`}
             >
@@ -39,23 +39,29 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                   layoutId="active-pill"
                   className="absolute inset-0 bg-[#E2E2E2] rounded-full -z-10"
                   initial={false}
-                  transition={{ type: 'spring', stiffness: 260, damping: 26 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                 />
               )}
 
-              <Icon className={`w-[22px] h-[22px] flex-shrink-0 transition-colors duration-300 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
-
-              <motion.span
-                layout
-                className={`font-semibold overflow-hidden whitespace-nowrap ${
-                  isActive
-                    ? 'ml-2 opacity-100 text-[14px]'
-                    : 'w-0 ml-0 opacity-0 text-[0px]'
+              <Icon
+                className={`w-[22px] h-[22px] flex-shrink-0 transition-transform duration-200 ${
+                  isActive ? 'stroke-[2.5px]' : 'stroke-2'
                 }`}
-                transition={{ type: 'spring', stiffness: 260, damping: 26 }}
-              >
-                {item.label}
-              </motion.span>
+              />
+
+              <AnimatePresence initial={false}>
+                {isActive && (
+                  <motion.span
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: 'auto' }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    className="font-inter font-semibold text-[14px] ml-2 whitespace-nowrap overflow-hidden"
+                  >
+                    {item.label}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </motion.button>
           );
         })}

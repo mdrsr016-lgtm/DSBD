@@ -15,13 +15,18 @@ export function TopNav({ onNavigate }: TopNavProps) {
 
   return (
     <header className="w-full z-50 relative pointer-events-none bg-transparent">
-      <div className="w-full max-w-6xl mx-auto flex items-center justify-between px-6 sm:px-8 lg:px-12 py-5 sm:py-6">
+      <div className="w-full max-w-6xl mx-auto flex items-start justify-between px-6 sm:px-8 lg:px-12 py-5 sm:py-6">
         {/* Logo & Title */}
-        <div className="flex items-center gap-3 pointer-events-auto cursor-pointer" onClick={() => onNavigate?.('dashboard')}>
-          <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-[#22D3EE] flex-shrink-0" />
-          <span className="font-jakarta font-extrabold text-2xl sm:text-[1.75rem] text-white tracking-tight leading-none">
-            Trust<span className="text-[#22D3EE]">Bank</span>
-          </span>
+        <div className="flex flex-col items-start pointer-events-auto cursor-pointer" onClick={() => onNavigate?.('dashboard')}>
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-[#22D3EE] flex-shrink-0" />
+            <span className="font-jakarta font-extrabold text-2xl sm:text-[1.75rem] text-white tracking-tight leading-none">
+              Trust<span className="text-[#22D3EE]">Bank</span>
+            </span>
+          </div>
+          <p className="font-inter text-[11px] sm:text-xs text-[#64748B] mt-1.5 tracking-tight">
+            Developed By <span className="text-[#94A3B8] font-medium">Dhaka Bank PLC</span>
+          </p>
         </div>
 
         {/* Profile & Dropdown */}
