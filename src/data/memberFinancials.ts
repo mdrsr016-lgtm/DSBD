@@ -24,6 +24,10 @@ export interface MemberLoan {
   status: 'Active' | 'Pending' | 'Paid';
   nextPaymentDate: string;
   isEligibleForAnotherLoan: boolean;
+  loanDuration?: string;
+  totalDue?: number;
+  endMonth?: string;
+  nextPaymentAmount?: number;
 }
 
 export const MEMBER_LOAN_DATA: Record<string, MemberLoan> = {
@@ -32,12 +36,20 @@ export const MEMBER_LOAN_DATA: Record<string, MemberLoan> = {
     status: 'Active',
     nextPaymentDate: 'Nov 15, 2026',
     isEligibleForAnotherLoan: true,
+    loanDuration: '6 months',
+    totalDue: 25_000,
+    endMonth: 'May 15, 2026',
+    nextPaymentAmount: 4_167,
   },
   default: {
     currentLoan: 25_000,
     status: 'Active',
     nextPaymentDate: 'Nov 15, 2026',
     isEligibleForAnotherLoan: true,
+    loanDuration: '6 months',
+    totalDue: 25_000,
+    endMonth: 'May 15, 2026',
+    nextPaymentAmount: 4_167,
   },
 };
 
