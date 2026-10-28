@@ -1,5 +1,5 @@
 import { LayoutDashboard, Wallet, Target, Bell, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface BottomNavProps {
   activeTab: string;
@@ -17,7 +17,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <nav className="flex items-center justify-between w-[94vw] max-w-[460px] p-2 bg-[#090D14]/90 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/10 relative overflow-hidden mx-auto">
+      <nav className="flex items-center justify-between w-[94vw] max-w-[460px] p-2 bg-white/90 dark:bg-[#090D14]/90 backdrop-blur-2xl rounded-[2rem] shadow-xl dark:shadow-2xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden mx-auto transition-colors duration-200">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           const Icon = item.icon;
@@ -30,14 +30,14 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
               onClick={() => onTabChange(item.id)}
               className={`relative flex items-center justify-center h-12 rounded-full transition-colors duration-200 z-10 select-none ${
                 isActive
-                  ? 'text-[#1A1A24] w-[136px]'
-                  : 'text-white/60 hover:text-white w-12'
+                  ? 'text-white dark:text-[#1A1A24] w-[136px]'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-white/60 dark:hover:text-white w-12'
               }`}
             >
               {isActive && (
                 <motion.div
                   layoutId="active-pill"
-                  className="absolute inset-0 bg-[#E2E2E2] rounded-full -z-10"
+                  className="absolute inset-0 bg-sky-500 dark:bg-[#E2E2E2] rounded-full -z-10 shadow-md dark:shadow-none"
                   initial={false}
                   transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                 />
@@ -49,19 +49,17 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                 }`}
               />
 
-              <AnimatePresence initial={false}>
-                {isActive && (
-                  <motion.span
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: 'auto' }}
-                    exit={{ opacity: 0, width: 0 }}
-                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                    className="font-inter font-semibold text-[14px] ml-2 whitespace-nowrap overflow-hidden"
-                  >
-                    {item.label}
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              {isActive && (
+                <motion.span
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -6 }}
+                  transition={{ duration: 0.15 }}
+                  className="ml-2 text-xs font-bold tracking-tight whitespace-nowrap overflow-hidden"
+                >
+                  {item.label}
+                </motion.span>
+              )}
             </motion.button>
           );
         })}

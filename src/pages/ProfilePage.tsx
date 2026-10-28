@@ -72,14 +72,14 @@ export function ProfilePage() {
       className="flex flex-col gap-5 max-w-xl mx-auto"
     >
       {/* ── Hero Card ─────────────────────────────────────────────────────── */}
-      <motion.div variants={fadeUp} className="glass-card rounded-2xl overflow-hidden">
+      <motion.div variants={fadeUp} className="bg-white/95 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-md dark:shadow-none transition-colors duration-200">
         {/* Colour banner */}
         <div
           className="h-24 w-full relative"
-          style={{ background: `linear-gradient(135deg, ${colors.bg.replace(/0\.\d+/, '0.35')} 0%, rgba(6,9,15,0.6) 100%)` }}
+          style={{ background: `linear-gradient(135deg, ${colors.bg.replace(/0\.\d+/, '0.35')} 0%, rgba(20,184,166,0.15) 100%)` }}
         >
           <div
-            className="absolute inset-0 opacity-30"
+            className="absolute inset-0 opacity-25"
             style={{ background: `radial-gradient(circle at 30% 50%, ${colors.text} 0%, transparent 70%)` }}
           />
         </div>
@@ -91,19 +91,19 @@ export function ProfilePage() {
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="w-20 h-20 rounded-2xl border-4 border-[#06090F] shadow-xl"
+                className="w-20 h-20 rounded-2xl border-4 border-white dark:border-[#06090F] shadow-lg object-cover"
               />
               {/* Role emoji badge */}
               <span className="absolute -bottom-1.5 -right-1.5 text-lg leading-none">{meta.icon}</span>
             </div>
-            <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100/80 dark:bg-white/5 text-slate-700 dark:text-white/60 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-white/10 transition-all">
               <Edit3 className="w-3 h-3" />
               Edit
             </button>
           </div>
 
           {/* Name & role */}
-          <h2 className="text-xl font-bold text-icy-white leading-tight">{user.name}</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-icy-white leading-tight">{user.name}</h2>
           <div className="flex items-center gap-2 mt-1.5">
             <span
               className="text-xs font-bold capitalize px-2.5 py-0.5 rounded-full"
@@ -118,20 +118,20 @@ export function ProfilePage() {
                   key={i}
                   className="w-3 h-3"
                   fill={i < details.stars ? colors.text : 'transparent'}
-                  stroke={i < details.stars ? colors.text : 'rgba(255,255,255,0.2)'}
+                  stroke={i < details.stars ? colors.text : '#CBD5E1'}
                 />
               ))}
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-sm text-white/50 mt-3 leading-relaxed">{meta.description}</p>
+          <p className="text-sm text-slate-600 dark:text-white/50 mt-3 leading-relaxed">{meta.description}</p>
         </div>
       </motion.div>
 
       {/* ── Contact Info ──────────────────────────────────────────────────── */}
-      <motion.div variants={fadeUp} className="glass-card rounded-2xl p-5 flex flex-col gap-3">
-        <p className="text-xs uppercase tracking-widest text-white/30 font-semibold mb-1">Contact Info</p>
+      <motion.div variants={fadeUp} className="bg-white/95 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl p-5 flex flex-col gap-3 shadow-md dark:shadow-none transition-colors duration-200">
+        <p className="text-xs uppercase tracking-widest text-slate-400 dark:text-white/30 font-semibold mb-1">Contact Info</p>
         <InfoRow icon={Mail}     label="Email"    value={user.email} />
         <InfoRow icon={Phone}    label="Phone"    value={details.phone} />
         <InfoRow icon={MapPin}   label="Location" value={details.location} />
@@ -139,10 +139,10 @@ export function ProfilePage() {
       </motion.div>
 
       {/* ── Permissions ───────────────────────────────────────────────────── */}
-      <motion.div variants={fadeUp} className="glass-card rounded-2xl p-5 flex flex-col gap-3">
+      <motion.div variants={fadeUp} className="bg-white/95 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl p-5 flex flex-col gap-3 shadow-md dark:shadow-none transition-colors duration-200">
         <div className="flex items-center gap-2 mb-1">
           <Shield className="w-4 h-4" style={{ color: colors.text }} />
-          <p className="text-xs uppercase tracking-widest text-white/30 font-semibold">Permissions</p>
+          <p className="text-xs uppercase tracking-widest text-slate-400 dark:text-white/30 font-semibold">Permissions</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {meta.permissions.map((perm) => (
@@ -158,14 +158,14 @@ export function ProfilePage() {
       </motion.div>
 
       {/* ── Account Actions ───────────────────────────────────────────────── */}
-      <motion.div variants={fadeUp} className="glass-card rounded-2xl overflow-hidden">
-        <p className="text-xs uppercase tracking-widest text-white/30 font-semibold px-5 pt-4 pb-2">Account</p>
+      <motion.div variants={fadeUp} className="bg-white/95 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-md dark:shadow-none transition-colors duration-200">
+        <p className="text-xs uppercase tracking-widest text-slate-400 dark:text-white/30 font-semibold px-5 pt-4 pb-2">Account</p>
         <ActionRow icon={Briefcase} label="Account Settings" />
         <ActionRow icon={Shield}    label="Security & Privacy" />
-        <div className="h-px bg-white/5 mx-5" />
+        <div className="h-px bg-slate-200 dark:bg-white/5 mx-5" />
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-5 py-3.5 w-full text-sm text-neon-rose hover:bg-neon-rose/10 transition-colors group"
+          className="flex items-center gap-3 px-5 py-3.5 w-full text-sm text-rose-500 dark:text-neon-rose hover:bg-rose-50 dark:hover:bg-neon-rose/10 transition-colors group"
         >
           <LogOut className="w-4 h-4 group-hover:drop-shadow-[0_0_8px_rgba(255,77,109,0.8)]" />
           <span>Logout</span>
@@ -190,12 +190,12 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
-        <Icon className="w-3.5 h-3.5 text-white/40" />
+      <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center flex-shrink-0">
+        <Icon className="w-3.5 h-3.5 text-slate-500 dark:text-white/40" />
       </div>
       <div className="min-w-0">
-        <p className="text-[10px] text-white/30 uppercase tracking-wide font-semibold">{label}</p>
-        <p className="text-sm text-icy-white font-medium truncate">{value}</p>
+        <p className="text-[10px] text-slate-400 dark:text-white/30 uppercase tracking-wide font-semibold">{label}</p>
+        <p className="text-sm text-slate-800 dark:text-icy-white font-medium truncate">{value}</p>
       </div>
     </div>
   );
@@ -203,10 +203,10 @@ function InfoRow({
 
 function ActionRow({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
-    <button className="flex items-center gap-3 px-5 py-3.5 w-full text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors">
-      <Icon className="w-4 h-4 text-white/40" />
+    <button className="flex items-center gap-3 px-5 py-3.5 w-full text-sm text-slate-700 dark:text-white/70 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-white/5 transition-colors">
+      <Icon className="w-4 h-4 text-slate-400 dark:text-white/40" />
       <span className="flex-1 text-left">{label}</span>
-      <ChevronRight className="w-4 h-4 text-white/20" />
+      <ChevronRight className="w-4 h-4 text-slate-300 dark:text-white/20" />
     </button>
   );
 }
