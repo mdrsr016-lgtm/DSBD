@@ -70,7 +70,7 @@ export interface MemberQuickStats {
 export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
   'usr-006': {
     cashInHand: 8_450,
-    cashNote: 'Available for the rest of this month',
+    cashNote: 'Available this month',
     paymentsDue: 4_167,
     paymentsDueDate: 'Nov 15, 2026',
     overtimeAmount: 3_600,
@@ -80,7 +80,7 @@ export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
   },
   default: {
     cashInHand: 8_450,
-    cashNote: 'Available for the rest of this month',
+    cashNote: 'Available this month',
     paymentsDue: 4_167,
     paymentsDueDate: 'Nov 15, 2026',
     overtimeAmount: 3_600,
