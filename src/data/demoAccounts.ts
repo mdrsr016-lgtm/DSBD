@@ -81,12 +81,12 @@ export const DEMO_ACCOUNTS: DemoUser[] = [
   },
 ];
 
-// Role badge colour map (flat colours)
+// Role badge colour map (inline styles used in components)
 export const ROLE_COLORS: Record<Role, { bg: string; text: string; glow: string }> = {
-  founder:  { bg: '#292524', text: '#EAB308', glow: 'transparent' },
-  admin:    { bg: '#1E1B4B', text: '#A78BFA', glow: 'transparent' },
-  manager:  { bg: '#082F49', text: '#38BDF8', glow: 'transparent' },
-  cashier:  { bg: '#064E3B', text: '#34D399', glow: 'transparent' },
-  investor: { bg: '#431407', text: '#FB923C', glow: 'transparent' },
-  member:   { bg: '#1E293B', text: '#94A3B8', glow: 'transparent' },
+  founder:  { bg: 'rgba(234,179,8,0.15)',   text: '#FACC15', glow: 'rgba(234,179,8,0.4)'   },
+  admin:    { bg: 'rgba(139,92,246,0.15)',   text: '#A78BFA', glow: 'rgba(139,92,246,0.4)'  },
+  manager:  { bg: 'rgba(34,211,238,0.15)',   text: '#22D3EE', glow: 'rgba(34,211,238,0.4)'  },
+  cashier:  { bg: 'rgba(52,211,153,0.15)',   text: '#34D399', glow: 'rgba(52,211,153,0.4)'  },
+  investor: { bg: 'rgba(251,146,60,0.15)',   text: '#FB923C', glow: 'rgba(251,146,60,0.4)'  },
+  member:   { bg: 'rgba(248,250,252,0.10)',  text: '#CBD5E1', glow: 'rgba(248,250,252,0.2)' },
 };

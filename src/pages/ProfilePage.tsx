@@ -73,11 +73,16 @@ export function ProfilePage() {
     >
       {/* ── Hero Card ─────────────────────────────────────────────────────── */}
       <motion.div variants={fadeUp} className="glass-card rounded-2xl overflow-hidden">
-        {/* Flat colour banner */}
+        {/* Colour banner */}
         <div
           className="h-24 w-full relative"
-          style={{ backgroundColor: colors.bg }}
-        />
+          style={{ background: `linear-gradient(135deg, ${colors.bg.replace(/0\.\d+/, '0.35')} 0%, rgba(6,9,15,0.6) 100%)` }}
+        >
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{ background: `radial-gradient(circle at 30% 50%, ${colors.text} 0%, transparent 70%)` }}
+          />
+        </div>
 
         {/* Avatar overlapping banner */}
         <div className="px-5 pb-5">
@@ -86,7 +91,7 @@ export function ProfilePage() {
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="w-20 h-20 rounded-2xl border-4 border-[#0F172A]"
+                className="w-20 h-20 rounded-2xl border-4 border-[#06090F] shadow-xl"
               />
               {/* Role emoji badge */}
               <span className="absolute -bottom-1.5 -right-1.5 text-lg leading-none">{meta.icon}</span>
@@ -101,8 +106,8 @@ export function ProfilePage() {
           <h2 className="text-xl font-bold text-icy-white leading-tight">{user.name}</h2>
           <div className="flex items-center gap-2 mt-1.5">
             <span
-              className="text-xs font-bold capitalize px-2.5 py-0.5 rounded-full border border-white/10"
-              style={{ background: colors.bg, color: colors.text }}
+              className="text-xs font-bold capitalize px-2.5 py-0.5 rounded-full"
+              style={{ background: colors.bg, color: colors.text, boxShadow: `0 0 10px ${colors.glow}` }}
             >
               {user.role}
             </span>
@@ -160,9 +165,9 @@ export function ProfilePage() {
         <div className="h-px bg-white/5 mx-5" />
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-5 py-3.5 w-full text-sm text-rose-400 hover:bg-rose-500/10 transition-colors group"
+          className="flex items-center gap-3 px-5 py-3.5 w-full text-sm text-neon-rose hover:bg-neon-rose/10 transition-colors group"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4 group-hover:drop-shadow-[0_0_8px_rgba(255,77,109,0.8)]" />
           <span>Logout</span>
         </button>
       </motion.div>

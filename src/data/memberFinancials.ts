@@ -25,6 +25,7 @@ export interface MemberLoan {
   nextPaymentDate: string;
   isEligibleForAnotherLoan: boolean;
   loanDuration?: string;
+  totalPaid?: number;
   totalDue?: number;
   endMonth?: string;
   nextPaymentAmount?: number;
@@ -37,8 +38,9 @@ export const MEMBER_LOAN_DATA: Record<string, MemberLoan> = {
     nextPaymentDate: 'Nov 15, 2026',
     isEligibleForAnotherLoan: true,
     loanDuration: '6 months',
-    totalDue: 25_000,
-    endMonth: 'May 15, 2026',
+    totalPaid: 8_334,
+    totalDue: 16_666,
+    endMonth: 'May 15, 2027',
     nextPaymentAmount: 4_167,
   },
   default: {
@@ -47,9 +49,44 @@ export const MEMBER_LOAN_DATA: Record<string, MemberLoan> = {
     nextPaymentDate: 'Nov 15, 2026',
     isEligibleForAnotherLoan: true,
     loanDuration: '6 months',
-    totalDue: 25_000,
-    endMonth: 'May 15, 2026',
+    totalPaid: 8_334,
+    totalDue: 16_666,
+    endMonth: 'May 15, 2027',
     nextPaymentAmount: 4_167,
+  },
+};
+
+export interface MemberQuickStats {
+  cashInHand: number;
+  cashNote: string;
+  paymentsDue: number;
+  paymentsDueDate: string;
+  overtimeAmount: number;
+  overtimeHours: number;
+  moneyLent: number;
+  moneyLentCount: number;
+}
+
+export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
+  'usr-006': {
+    cashInHand: 8_450,
+    cashNote: 'Available for the rest of this month',
+    paymentsDue: 4_167,
+    paymentsDueDate: 'Nov 15, 2026',
+    overtimeAmount: 3_600,
+    overtimeHours: 36,
+    moneyLent: 2_500,
+    moneyLentCount: 2,
+  },
+  default: {
+    cashInHand: 8_450,
+    cashNote: 'Available for the rest of this month',
+    paymentsDue: 4_167,
+    paymentsDueDate: 'Nov 15, 2026',
+    overtimeAmount: 3_600,
+    overtimeHours: 36,
+    moneyLent: 2_500,
+    moneyLentCount: 2,
   },
 };
 
