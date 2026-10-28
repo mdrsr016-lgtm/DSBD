@@ -220,7 +220,7 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
               </div>
               <div className="flex items-center">
                 <span className="font-inter text-[10px] sm:text-xs text-[#FF4D6D] font-normal leading-tight line-clamp-1">
-                  Due on {statsData.paymentsDueDate ?? loanData.nextPaymentDate}
+                  {statsData.paymentsNote ?? 'To pay this month'}
                 </span>
               </div>
             </div>

@@ -60,7 +60,8 @@ export interface MemberQuickStats {
   cashInHand: number;
   cashNote: string;
   paymentsDue: number;
-  paymentsDueDate: string;
+  paymentsDueDate?: string;
+  paymentsNote?: string;
   overtimeAmount: number;
   overtimeHours: number;
   moneyLent: number;
@@ -76,6 +77,7 @@ export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
     cashNote: 'Available this month',
     paymentsDue: 4_167,
     paymentsDueDate: 'Nov 15, 2026',
+    paymentsNote: 'To pay this month',
     overtimeAmount: 3_600,
     overtimeHours: 36,
     moneyLent: 2_500,
@@ -89,6 +91,7 @@ export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
     cashNote: 'Available this month',
     paymentsDue: 4_167,
     paymentsDueDate: 'Nov 15, 2026',
+    paymentsNote: 'To pay this month',
     overtimeAmount: 3_600,
     overtimeHours: 36,
     moneyLent: 2_500,
