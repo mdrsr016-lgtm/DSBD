@@ -68,6 +68,15 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
   const loanData = MEMBER_LOAN_DATA[user.id] ?? MEMBER_LOAN_DATA.default;
   const statsData = MEMBER_QUICK_STATS[user.id] ?? MEMBER_QUICK_STATS.default;
 
+  const monthlyPaid = statsData.monthlyPaid ?? 8_334;
+  const monthlyRemaining = statsData.monthlyRemaining ?? 4_167;
+  const monthlyTotal = monthlyPaid + monthlyRemaining;
+  const monthlyPercent = monthlyTotal > 0 ? Math.round((monthlyPaid / monthlyTotal) * 100) : 0;
+  const currentMonthYear = statsData.monthlyMonth ?? new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date());
+
   return (
     <motion.div
       variants={container}
@@ -261,6 +270,33 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
                   You're owed by {statsData.moneyLentCount} people
                 </span>
               </div>
+            </div>
+          </div>
+
+          {/* ── Monthly Payment Progress Bar Card ─────────────────────────────── */}
+          <div className="w-full bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 md:p-6 flex flex-col gap-2.5 sm:gap-3.5 shadow-[0_0_24px_rgba(0,194,255,0.12)]">
+            {/* Top row: Label + Month & Year | Percentage */}
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-inter font-medium text-xs sm:text-sm text-[#94A3B8]">
+                Payment Progress — {currentMonthYear}
+              </span>
+              <span className="font-jakarta font-bold text-xs sm:text-sm text-white tracking-tight">
+                {monthlyPercent}% Paid
+              </span>
+            </div>
+
+            {/* Progress Track & Bar */}
+            <div className="w-full h-2.5 sm:h-3 rounded-full bg-[#111C2B] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#00C2FF] to-[#00F5A0] transition-all duration-700 ease-out shadow-[0_0_10px_rgba(0,194,255,0.35)]"
+                style={{ width: `${monthlyPercent}%` }}
+              />
+            </div>
+
+            {/* Bottom row: Repaid / Remaining */}
+            <div className="flex items-center justify-between text-[11px] sm:text-xs text-[#94A3B8] font-inter">
+              <span>৳ {new Intl.NumberFormat('en-IN').format(monthlyPaid)} repaid</span>
+              <span>৳ {new Intl.NumberFormat('en-IN').format(monthlyRemaining)} remaining</span>
             </div>
           </div>
 

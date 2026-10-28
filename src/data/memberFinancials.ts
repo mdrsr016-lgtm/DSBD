@@ -65,6 +65,9 @@ export interface MemberQuickStats {
   overtimeHours: number;
   moneyLent: number;
   moneyLentCount: number;
+  monthlyPaid?: number;
+  monthlyRemaining?: number;
+  monthlyMonth?: string;
 }
 
 export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
@@ -77,6 +80,9 @@ export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
     overtimeHours: 36,
     moneyLent: 2_500,
     moneyLentCount: 2,
+    monthlyPaid: 8_334,
+    monthlyRemaining: 4_167,
+    monthlyMonth: 'October 2026',
   },
   default: {
     cashInHand: 8_450,
@@ -87,6 +93,9 @@ export const MEMBER_QUICK_STATS: Record<string, MemberQuickStats> = {
     overtimeHours: 36,
     moneyLent: 2_500,
     moneyLentCount: 2,
+    monthlyPaid: 8_334,
+    monthlyRemaining: 4_167,
+    monthlyMonth: 'October 2026',
   },
 };
 
