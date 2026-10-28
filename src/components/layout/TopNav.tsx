@@ -21,18 +21,18 @@ export function TopNav({ onNavigate }: TopNavProps) {
         <div className="flex flex-col items-start pointer-events-auto cursor-pointer" onClick={() => onNavigate?.('dashboard')}>
           <div className="flex items-center gap-2.5 sm:gap-3">
             {isManagement ? (
-              <TrendingUp className="w-7 h-7 sm:w-8 sm:h-8 text-[#22D3EE] flex-shrink-0" />
+              <TrendingUp className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400 flex-shrink-0" />
             ) : (
-              <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-[#22D3EE] flex-shrink-0" />
+              <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400 flex-shrink-0" />
             )}
             <span className="font-jakarta font-extrabold text-2xl sm:text-[1.75rem] text-white tracking-tight leading-none">
               {isManagement ? (
                 <>
-                  Grow <span className="text-[#22D3EE]">fin</span>
+                  Grow <span className="text-cyan-400">fin</span>
                 </>
               ) : (
                 <>
-                  Trust<span className="text-[#22D3EE]">Bank</span>
+                  Trust<span className="text-cyan-400">Bank</span>
                 </>
               )}
             </span>
@@ -54,7 +54,7 @@ export function TopNav({ onNavigate }: TopNavProps) {
             <img
               src={user?.avatar ?? 'https://i.pravatar.cc/150?u=default'}
               alt={user?.name ?? 'Profile'}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#22D3EE]/60 object-cover"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-slate-700 object-cover"
             />
             <div className="flex flex-col items-start text-left">
               <span className="font-jakarta text-sm sm:text-base font-bold text-white leading-tight">
@@ -73,7 +73,7 @@ export function TopNav({ onNavigate }: TopNavProps) {
 
           {/* Dropdown Menu */}
           <div
-            className={`absolute right-0 mt-3 w-52 bg-[#090D14] backdrop-blur-xl border border-white/10 rounded-xl p-1.5 flex flex-col gap-1 shadow-2xl z-50 transition-all duration-200 ease-in-out origin-top ${
+            className={`absolute right-0 mt-3 w-52 bg-[#0F172A] border border-slate-800 rounded-xl p-1.5 flex flex-col gap-1 z-50 transition-all duration-200 ease-in-out origin-top ${
               isDropdownOpen
                 ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
                 : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
@@ -82,13 +82,13 @@ export function TopNav({ onNavigate }: TopNavProps) {
             {/* User info block */}
             {user && (
               <div
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg mb-0.5"
-                style={{ background: colors?.bg ?? 'rgba(255,255,255,0.05)' }}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg mb-0.5 border border-white/5"
+                style={{ background: colors?.bg ?? '#1E293B' }}
               >
                 <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-white leading-tight truncate">{user.name}</p>
-                  <p className="text-[10px] capitalize font-bold" style={{ color: colors?.text ?? '#22D3EE' }}>
+                  <p className="text-[10px] capitalize font-bold" style={{ color: colors?.text ?? '#38BDF8' }}>
                     {user.role}
                   </p>
                 </div>
@@ -108,7 +108,7 @@ export function TopNav({ onNavigate }: TopNavProps) {
             <div className="h-[1px] bg-white/10 my-1 mx-1" />
             <button
               onClick={() => { setIsDropdownOpen(false); logout(); }}
-              className="flex items-center gap-3 px-3 py-2 text-sm text-neon-rose hover:bg-neon-rose/10 transition-colors w-full text-left group rounded-lg"
+              className="flex items-center gap-3 px-3 py-2 text-sm text-rose-400 hover:bg-rose-500/10 transition-colors w-full text-left group rounded-lg"
             >
               <LogOut className="w-4 h-4" />
               <span>Logout</span>

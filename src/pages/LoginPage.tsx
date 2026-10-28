@@ -46,12 +46,12 @@ export function LoginPage() {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center gap-3 mb-2"
         >
-          <div className="p-3 bg-premium-cyan/20 rounded-2xl shadow-[0_0_24px_rgba(34,211,238,0.35)]">
-            <Landmark className="w-8 h-8 text-premium-cyan drop-shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
+          <div className="p-3 bg-slate-900 border border-slate-800 rounded-2xl">
+            <Landmark className="w-8 h-8 text-cyan-400" />
           </div>
           <div className="text-center">
             <h1 className="text-3xl font-bold text-icy-white tracking-tight">
-              Trust<span className="text-premium-cyan">Bank</span>
+              Trust<span className="text-cyan-400">Bank</span>
             </h1>
             <p className="text-sm text-white/40 mt-1">Sign in to your account</p>
           </div>
@@ -68,7 +68,7 @@ export function LoginPage() {
             {/* Email */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-white/50 uppercase tracking-widest">Email</label>
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus-within:border-premium-cyan/60 focus-within:bg-premium-cyan/5 transition-all">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus-within:border-cyan-500 focus-within:bg-white/[0.07] transition-all">
                 <Mail className="w-4 h-4 text-white/30 flex-shrink-0" />
                 <input
                   type="email"
@@ -85,7 +85,7 @@ export function LoginPage() {
             {/* Password */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-white/50 uppercase tracking-widest">Password</label>
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus-within:border-premium-cyan/60 focus-within:bg-premium-cyan/5 transition-all">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus-within:border-cyan-500 focus-within:bg-white/[0.07] transition-all">
                 <Lock className="w-4 h-4 text-white/30 flex-shrink-0" />
                 <input
                   type={showPw ? 'text' : 'password'}
@@ -113,7 +113,7 @@ export function LoginPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="text-neon-rose text-xs font-medium text-center -mt-1"
+                  className="text-rose-400 text-xs font-medium text-center -mt-1"
                 >
                   {error}
                 </motion.p>
@@ -123,7 +123,7 @@ export function LoginPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3 rounded-xl font-bold text-sm bg-premium-cyan text-deep-black hover:bg-premium-cyan/90 active:scale-95 transition-all shadow-[0_0_20px_rgba(34,211,238,0.35)] hover:shadow-[0_0_30px_rgba(34,211,238,0.55)]"
+              className="w-full py-3 rounded-xl font-bold text-sm bg-cyan-500 text-black hover:bg-cyan-400 active:scale-95 transition-all"
             >
               Sign In
             </button>
@@ -209,18 +209,17 @@ function QuickLoginCard({ account, onLogin }: { account: DemoUser; onLogin: (a: 
   return (
     <button
       onClick={() => onLogin(account)}
-      className="flex items-center gap-2.5 p-2.5 rounded-xl border transition-all duration-200 hover:scale-[1.02] active:scale-95 text-left"
+      className="flex items-center gap-2.5 p-2.5 rounded-xl border border-white/10 transition-all duration-200 hover:bg-white/5 active:scale-95 text-left"
       style={{
         background: colors.bg,
-        borderColor: colors.text + '30',
       }}
     >
-      <img src={account.avatar} alt={account.name} className="w-8 h-8 rounded-full flex-shrink-0 border" style={{ borderColor: colors.text + '50' }} />
+      <img src={account.avatar} alt={account.name} className="w-8 h-8 rounded-full flex-shrink-0 border border-white/15" />
       <div className="min-w-0">
         <p className="text-xs font-semibold text-icy-white truncate leading-tight">{account.name.split(' ')[0]}</p>
         <p
           className="text-[10px] font-bold capitalize"
-          style={{ color: colors.text, textShadow: `0 0 8px ${colors.glow}` }}
+          style={{ color: colors.text }}
         >
           {account.role}
         </p>

@@ -46,44 +46,31 @@
   }
 
   .glass-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.3) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    background-color: #0F172A;
+    border: 1px solid #1E293B;
     position: relative;
     z-index: 10;
   }
   
   .glass-card:active {
-    transform: scale(0.98);
+    transform: scale(0.99);
     transition: transform 0.1s ease;
   }
 
   .blob-cyan {
-    @apply absolute w-64 h-64 bg-premium-cyan rounded-full;
-    filter: blur(80px);
-    opacity: 0.20;
-    z-index: 0;
+    display: none;
   }
 
   .blob-rose {
-    @apply absolute w-64 h-64 bg-neon-rose rounded-full;
-    filter: blur(90px);
-    opacity: 0.15;
-    z-index: 0;
+    display: none;
   }
 
   .text-glow-cyan {
     @apply text-premium-cyan;
-    text-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
   }
 
   .text-glow-rose {
-    @apply text-neon-rose;
-    text-shadow: 0 0 10px rgba(255, 77, 109, 0.6);
+    @apply text-flat-rose;
   }
 
   .bengali-num { 
