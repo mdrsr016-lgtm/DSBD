@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ThemeToggle } from './components/ThemeToggle';
 import { LoginPage } from './pages/LoginPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { MemberDashboard } from './pages/MemberDashboard';
@@ -72,7 +74,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black relative overflow-x-hidden flex flex-col items-center">
+    <div className="min-h-screen w-full bg-[#F8FAFC] dark:bg-black text-[#0F172A] dark:text-white relative overflow-x-hidden flex flex-col items-center transition-colors duration-300">
 
       {/* Top Navigation */}
       <TopNav onNavigate={(tab) => navigateTo(tab)} />
@@ -100,10 +102,10 @@ function AppContent() {
             {activeTab !== 'dashboard' && activeTab !== 'profile' && (
               <div className="flex flex-col items-center justify-center h-64 gap-2 mt-8">
                 <p className="text-4xl">🚧</p>
-                <p className="text-white/30 text-sm capitalize font-semibold tracking-wide mt-1">
+                <p className="text-white/30 dark:text-white/30 text-sm capitalize font-semibold tracking-wide mt-1">
                   {activeTab}
                 </p>
-                <p className="text-white/15 text-xs">Coming soon</p>
+                <p className="text-white/15 dark:text-white/15 text-xs">Coming soon</p>
               </div>
             )}
           </motion.main>
@@ -121,9 +123,12 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ThemeToggle />
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

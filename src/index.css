@@ -9,13 +9,30 @@
     color-scheme: dark;
   }
 
+  html.dark :root {
+    color-scheme: dark;
+  }
+
+  html.light :root {
+    color-scheme: light;
+  }
+
   html, body, #root {
-    @apply h-full w-full bg-black text-white m-0 p-0 font-inter antialiased;
-    background-color: #000000 !important;
+    @apply h-full w-full m-0 p-0 font-inter antialiased;
     min-height: 100vh;
   }
 
-  /* Fix browser autofill / autocomplete white background in dark mode */
+  html.dark, html.dark body, html.dark #root {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+  }
+
+  html.light, html.light body, html.light #root {
+    background-color: #F8FAFC !important;
+    color: #0F172A !important;
+  }
+
+  /* Fix browser autofill / autocomplete background */
   input:-webkit-autofill,
   input:-webkit-autofill:hover, 
   input:-webkit-autofill:focus, 
@@ -38,6 +55,100 @@
     width: 0px; 
     background: transparent; 
   }
+}
+
+/* ── Light Mode Color Overrides ─────────────────────────────────────────── */
+html.light .bg-black {
+  background-color: #F8FAFC !important;
+}
+
+/* Cards */
+html.light .bg-\[\#020712\] {
+  background-color: #FFFFFF !important;
+  border-color: #38BDF8 !important;
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Headings and primary white text */
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+html.light .text-\[\#F8FAFC\] {
+  color: #0F172A !important;
+}
+
+/* Secondary muted text */
+html.light .text-\[\#94A3B8\] {
+  color: #64748B !important;
+}
+
+html.light .text-\[\#7DD3FC\]\/75,
+html.light .text-\[\#7DD3FC\]\/80 {
+  color: #0284C7 !important;
+}
+
+/* Dividers & lines */
+html.light .text-\[\#263746\] {
+  color: #CBD5E1 !important;
+}
+
+html.light .bg-\[\#0E2845\] {
+  background-color: #E2E8F0 !important;
+}
+
+html.light .border-\[\#0E2845\] {
+  border-color: #E2E8F0 !important;
+}
+
+/* Progress bar background track */
+html.light .bg-\[\#111C2B\] {
+  background-color: #E2E8F0 !important;
+}
+
+/* Icon badge backgrounds in light mode */
+html.light .bg-\[\#06241B\]\/80 {
+  background-color: #DCFCE7 !important;
+  border-color: #86EFAC !important;
+}
+
+html.light .bg-\[\#2B0E16\]\/80 {
+  background-color: #FFE4E6 !important;
+  border-color: #FDA4AF !important;
+}
+
+html.light .bg-\[\#081F38\]\/80,
+html.light .bg-\[\#081F38\]\/70 {
+  background-color: #E0F2FE !important;
+  border-color: #7DD3FC !important;
+}
+
+html.light .bg-\[\#230F36\]\/80 {
+  background-color: #F3E8FF !important;
+  border-color: #D8B4FE !important;
+}
+
+/* Bottom nav in light mode */
+html.light .bg-\[\#090D14\]\/90 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .text-white\/60 {
+  color: #64748B !important;
+}
+
+html.light .hover\:text-white:hover {
+  color: #0F172A !important;
+}
+
+html.light .bg-\[\#E2E2E2\] {
+  background-color: #0284C7 !important;
+}
+
+html.light .text-\[\#1A1A24\] {
+  color: #FFFFFF !important;
 }
 
 @layer components {
