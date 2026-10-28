@@ -76,12 +76,6 @@ function AppContent() {
   return (
     <div className="min-h-screen w-full bg-[#F8FAFC] dark:bg-black text-[#0F172A] dark:text-white relative overflow-x-hidden flex flex-col items-center transition-colors duration-300">
 
-      {/* Atmospheric ambient background glows for both light and dark modes */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-cyan-400/10 dark:bg-cyan-500/[0.07] blur-[120px] transition-colors duration-500" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-teal-400/10 dark:bg-teal-500/[0.05] blur-[120px] transition-colors duration-500" />
-      </div>
-
       {/* Top Navigation */}
       <TopNav onNavigate={(tab) => navigateTo(tab)} />
 
@@ -108,10 +102,10 @@ function AppContent() {
             {activeTab !== 'dashboard' && activeTab !== 'profile' && (
               <div className="flex flex-col items-center justify-center h-64 gap-2 mt-8">
                 <p className="text-4xl">🚧</p>
-                <p className="text-slate-500 dark:text-white/30 text-sm capitalize font-semibold tracking-wide mt-1">
+                <p className="text-white/30 dark:text-white/30 text-sm capitalize font-semibold tracking-wide mt-1">
                   {activeTab}
                 </p>
-                <p className="text-slate-400 dark:text-white/15 text-xs">Coming soon</p>
+                <p className="text-white/15 dark:text-white/15 text-xs">Coming soon</p>
               </div>
             )}
           </motion.main>
