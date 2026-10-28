@@ -167,97 +167,97 @@ export function MemberDashboard(_props?: { onNavigate?: (tab: string) => void })
       {/* ── E. Member-Only Section: Quick Stats, Current Loan & Eligibility Banner ─── */}
       {user.role === 'member' && (
         <motion.div variants={fadeUp} className="mt-8 sm:mt-10 flex flex-col gap-5 w-full max-w-[800px]">
-          {/* Quick Stats Grid (4 Cards: 2x2) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 w-full">
+          {/* Quick Stats Grid (4 Cards: 2x2 on all screens including smartphones) */}
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 w-full">
             {/* Card 1: Cash in Hand */}
-            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[22px] p-5 sm:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
-              <div className="flex items-start justify-between">
-                <span className="font-inter text-xs sm:text-sm text-[#94A3B8] font-medium tracking-normal">
+            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[18px] sm:rounded-[22px] p-3.5 sm:p-5 md:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
+              <div className="flex items-start justify-between gap-1.5">
+                <span className="font-inter text-[11px] sm:text-xs md:text-sm text-[#94A3B8] font-medium tracking-normal leading-tight">
                   Cash in Hand
                 </span>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#06241B]/80 border border-[#00F5A0]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(0,245,160,0.12)]">
-                  <Wallet className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-[#00F5A0] stroke-[1.8]" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-[#06241B]/80 border border-[#00F5A0]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(0,245,160,0.12)]">
+                  <Wallet className="w-4 h-4 sm:w-5 sm:h-5 md:w-5.5 md:h-5.5 text-[#00F5A0] stroke-[1.8]" />
                 </div>
               </div>
-              <div className="mt-3 sm:mt-4 mb-3 sm:mb-4">
-                <p className="font-jakarta font-extrabold text-2xl sm:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
-                  <span className="font-bold text-lg sm:text-2xl text-white select-none">৳</span>
+              <div className="mt-2 sm:mt-3 md:mt-4 mb-2 sm:mb-3 md:mb-4">
+                <p className="font-jakarta font-extrabold text-lg sm:text-2xl md:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-bold text-sm sm:text-lg md:text-2xl text-white select-none">৳</span>
                   <span>{new Intl.NumberFormat('en-IN').format(statsData.cashInHand)}</span>
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#00F5A0] flex-shrink-0 shadow-[0_0_8px_#00F5A0]" />
-                <span className="font-inter text-xs text-[#00F5A0] font-normal">
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#00F5A0] flex-shrink-0 shadow-[0_0_8px_#00F5A0]" />
+                <span className="font-inter text-[10px] sm:text-xs text-[#00F5A0] font-normal leading-tight line-clamp-1">
                   {statsData.cashNote}
                 </span>
               </div>
             </div>
 
             {/* Card 2: Payments Due */}
-            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[22px] p-5 sm:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
-              <div className="flex items-start justify-between">
-                <span className="font-inter text-xs sm:text-sm text-[#94A3B8] font-medium tracking-normal">
+            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[18px] sm:rounded-[22px] p-3.5 sm:p-5 md:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
+              <div className="flex items-start justify-between gap-1.5">
+                <span className="font-inter text-[11px] sm:text-xs md:text-sm text-[#94A3B8] font-medium tracking-normal leading-tight">
                   Payments Due
                 </span>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#2B0E16]/80 border border-[#FF4D6D]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(255,77,109,0.12)]">
-                  <CalendarClock className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-[#FF4D6D] stroke-[1.8]" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-[#2B0E16]/80 border border-[#FF4D6D]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(255,77,109,0.12)]">
+                  <CalendarClock className="w-4 h-4 sm:w-5 sm:h-5 md:w-5.5 md:h-5.5 text-[#FF4D6D] stroke-[1.8]" />
                 </div>
               </div>
-              <div className="mt-3 sm:mt-4 mb-3 sm:mb-4">
-                <p className="font-jakarta font-extrabold text-2xl sm:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
-                  <span className="font-bold text-lg sm:text-2xl text-white select-none">৳</span>
+              <div className="mt-2 sm:mt-3 md:mt-4 mb-2 sm:mb-3 md:mb-4">
+                <p className="font-jakarta font-extrabold text-lg sm:text-2xl md:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-bold text-sm sm:text-lg md:text-2xl text-white select-none">৳</span>
                   <span>{new Intl.NumberFormat('en-IN').format(statsData.paymentsDue ?? loanData.nextPaymentAmount ?? 4167)}</span>
                 </p>
               </div>
               <div className="flex items-center">
-                <span className="font-inter text-xs text-[#FF4D6D] font-normal">
+                <span className="font-inter text-[10px] sm:text-xs text-[#FF4D6D] font-normal leading-tight line-clamp-1">
                   Due on {statsData.paymentsDueDate ?? loanData.nextPaymentDate}
                 </span>
               </div>
             </div>
 
             {/* Card 3: Total Overtime */}
-            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[22px] p-5 sm:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
-              <div className="flex items-start justify-between">
-                <span className="font-inter text-xs sm:text-sm text-[#94A3B8] font-medium tracking-normal">
+            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[18px] sm:rounded-[22px] p-3.5 sm:p-5 md:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
+              <div className="flex items-start justify-between gap-1.5">
+                <span className="font-inter text-[11px] sm:text-xs md:text-sm text-[#94A3B8] font-medium tracking-normal leading-tight">
                   Total Overtime
                 </span>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#081F38]/80 border border-[#00E5FF]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(0,229,255,0.12)]">
-                  <CirclePlus className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-[#00E5FF] stroke-[1.8]" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-[#081F38]/80 border border-[#00E5FF]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(0,229,255,0.12)]">
+                  <CirclePlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-5.5 md:h-5.5 text-[#00E5FF] stroke-[1.8]" />
                 </div>
               </div>
-              <div className="mt-3 sm:mt-4 mb-3 sm:mb-4">
-                <p className="font-jakarta font-extrabold text-2xl sm:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
-                  <span className="font-bold text-lg sm:text-2xl text-white select-none">৳</span>
+              <div className="mt-2 sm:mt-3 md:mt-4 mb-2 sm:mb-3 md:mb-4">
+                <p className="font-jakarta font-extrabold text-lg sm:text-2xl md:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-bold text-sm sm:text-lg md:text-2xl text-white select-none">৳</span>
                   <span>{new Intl.NumberFormat('en-IN').format(statsData.overtimeAmount)}</span>
                 </p>
               </div>
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#081F38]/80 border border-[#0F365A] text-[#00E5FF]">
-                  <Clock className="w-3.5 h-3.5 text-[#00E5FF] flex-shrink-0" />
-                  <span className="font-inter text-xs font-medium">{statsData.overtimeHours} Hours</span>
+                <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[#081F38]/80 border border-[#0F365A] text-[#00E5FF]">
+                  <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#00E5FF] flex-shrink-0" />
+                  <span className="font-inter text-[10px] sm:text-xs font-medium">{statsData.overtimeHours} Hours</span>
                 </div>
               </div>
             </div>
 
             {/* Card 4: Money Lent */}
-            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[22px] p-5 sm:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
-              <div className="flex items-start justify-between">
-                <span className="font-inter text-xs sm:text-sm text-[#94A3B8] font-medium tracking-normal">
+            <div className="bg-[#020712] border-[1.5px] border-[#00C2FF] rounded-[18px] sm:rounded-[22px] p-3.5 sm:p-5 md:p-6 flex flex-col justify-between shadow-[0_0_24px_rgba(0,194,255,0.12)]">
+              <div className="flex items-start justify-between gap-1.5">
+                <span className="font-inter text-[11px] sm:text-xs md:text-sm text-[#94A3B8] font-medium tracking-normal leading-tight">
                   Money Lent
                 </span>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#230F36]/80 border border-[#C084FC]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(192,132,252,0.12)]">
-                  <HandCoins className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-[#C084FC] stroke-[1.8]" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-[#230F36]/80 border border-[#C084FC]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(192,132,252,0.12)]">
+                  <HandCoins className="w-4 h-4 sm:w-5 sm:h-5 md:w-5.5 md:h-5.5 text-[#C084FC] stroke-[1.8]" />
                 </div>
               </div>
-              <div className="mt-3 sm:mt-4 mb-3 sm:mb-4">
-                <p className="font-jakarta font-extrabold text-2xl sm:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
-                  <span className="font-bold text-lg sm:text-2xl text-white select-none">৳</span>
+              <div className="mt-2 sm:mt-3 md:mt-4 mb-2 sm:mb-3 md:mb-4">
+                <p className="font-jakarta font-extrabold text-lg sm:text-2xl md:text-3xl text-white tracking-tight flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-bold text-sm sm:text-lg md:text-2xl text-white select-none">৳</span>
                   <span>{new Intl.NumberFormat('en-IN').format(statsData.moneyLent)}</span>
                 </p>
               </div>
               <div className="flex items-center">
-                <span className="font-inter text-xs text-[#C084FC] font-normal">
+                <span className="font-inter text-[10px] sm:text-xs text-[#C084FC] font-normal leading-tight line-clamp-1">
                   You're owed by {statsData.moneyLentCount} people
                 </span>
               </div>
